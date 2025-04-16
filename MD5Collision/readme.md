@@ -95,3 +95,10 @@ if __name__ == "__main__":
     * ![Results](image-12.png)
 * Now it is clear that both have the same hash even when we added new concatenated data. 
 > Done 
+
+## Task 3: Generating Two Files with the Same MD5 Hash
+* ![Task Description](image-13.png)
+* Scenario 1 Plan: 
+    * ![alt text](image-14.png)
+* Scenario 2 Plan: 
+    * 
