@@ -29,7 +29,8 @@
     
 * now we have 4 questions to answer:
 ### Q1. what does this md5_fastcoll does and how it does it?
-*
+* Generates two different 128-byte messages with the same MD5 hash.
+* To know how it does it, read the src code exists in  **src/md5fastcoll/main.cpp**
 ### Q2. What happens if the byte length of your prefix file is not a multiple of 64?
 * First question to ask here, is how can we determine the byte length of our prefix file
 * the answer for this can be done using this command:
@@ -49,7 +50,6 @@ def generate_random_file(length):
     with open("prefix2.txt", "w") as f:
         f.write(random_text)
 
-# Example: Ask the user for input length
 if __name__ == "__main__":
     n = int(input("Enter number of characters to generate: "))
     generate_random_file(n)
