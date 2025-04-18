@@ -101,4 +101,11 @@ if __name__ == "__main__":
 * Scenario 1 Plan: 
     * ![alt text](image-14.png)
 * Scenario 2 Plan: 
-    * 
+
+
+* Steps for Scenario 2: 
+1. e7na 3ndna 2 pdfs.
+    2. pdf1 -> h1.
+    3. pdf2 -> h2.
+2. ehna 3auzen enna n3dl fe pdf1 w pdf2 b7es en el t3delat de matkonsh visible, w nwsl le en h1 = h2. 
+3. kahly fe demaghk en lw 3ndk H(M) = H(N) -> H(M||T) = H(N || T)
