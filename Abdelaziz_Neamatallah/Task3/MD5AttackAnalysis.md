@@ -42,3 +42,12 @@
 ### Progress till now:
 * I have successfully generated two pdfs with the same hash value, however, my issue is that the pdfs are visibally changed, and some of them has different content from the other.
 * my task is to know how to generate .bin files so that I can correctly show the correct content
+
+* my goal now is to make the headers which are different:
+  * the first one should show the first pdf only,
+  * the second one should show the second pdf only,
+  * then we should use the chosen prefix collision on these parts only to generate the same hash which should be T.
+  * then now we know pdf A + pdf B is merged in one file, so they must have the same hash (A) = hash (B)
+  * and since the binary of the two crafted headers will be the same so it can be considered as T.
+  * so using the concept of hash(A + T) = hash(B + T)
+  * we should be able to generate both files. 
