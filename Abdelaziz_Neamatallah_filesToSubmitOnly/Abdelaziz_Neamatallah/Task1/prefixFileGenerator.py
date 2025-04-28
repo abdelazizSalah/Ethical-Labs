@@ -10,6 +10,6 @@ def generate_random_file(length):
 
 # Example: Ask the user for input length
 if __name__ == "__main__":
-    n = int(input("Enter number of characters to generate: "))
+    n = int(input("Enter number of characters to generatee: "))
     generate_random_file(n)
-    print(f"Generated {n} random characters in prefix2.txt\n")
+    print(f"Generated {n} random characters in prefix2.txt\n ")
