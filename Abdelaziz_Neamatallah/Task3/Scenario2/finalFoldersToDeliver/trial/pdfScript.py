@@ -109,15 +109,6 @@ def adjustPDF(contents):
 
   contents = contents[:startXREF] + xref + contents[endXREF:]
 
-  '''
-    at any pdf file there is something like this written :
-      startxref -> we need to get the index of this
-      123456
-      %%EOF -> and the index of this
-
-
-
-  '''
   startStartXref = contents.find(b"\nstartxref\n", endXREF) + len(b"\nstartxref\n")
   endStartXref = contents.find(b"\n%%%%EOF", startStartXref)
 #   contents = contents[:startStartXref] + "%i" % startXREF + contents[endStartXref:]

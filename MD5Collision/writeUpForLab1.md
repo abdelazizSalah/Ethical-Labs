@@ -99,13 +99,79 @@ if __name__ == "__main__":
 ## Task 3: Generating Two Files with the Same MD5 Hash
 * ![Task Description](image-13.png)
 * Scenario 1 Plan: 
-    * ![alt text](image-14.png)
+    * It was mentioned that it is not possible to generate the exact same hash from different file, so this scenario is not doable (in this time constrained frame - 2 weeks is not enough to think about new way :)
 * Scenario 2 Plan: 
 
 
 * Steps for Scenario 2: 
-1. e7na 3ndna 2 pdfs.
+1. We have 2 pdfs, with two different hash values.
     2. pdf1 -> h1.
     3. pdf2 -> h2.
-2. ehna 3auzen enna n3dl fe pdf1 w pdf2 b7es en el t3delat de matkonsh visible, w nwsl le en h1 = h2. 
-3. kahly fe demaghk en lw 3ndk H(M) = H(N) -> H(M||T) = H(N || T)
+2. we need to modify both files to get
+    - h1 = h2. 
+3. Our base logic is that if H(M) = H(N) then  H(M||T) = H(N || T)
+
+### Utility Things to understand
+#### 1. Understanding of PDF Structure
+* ![alt text](image-19.png)
+* ![alt text](image-18.png)
+    - Root: it is the cornerstone entry, and it connects everything together
+    - Catalog: Points to all pages
+    - Pages: Set of different pages
+    - Page: single page
+    - Content: Content of ech page
+* knowing this structure we can do the following 2 tricks.
+* ![alt text](image-20.png)
+* this way we can generate same MD5 hash value to any pair of PDFS.
+
+#### 2. Unicoll: 
+* Unicoll is a tool for generating chosen-prefix collisions for MD5
+* it was developed by Marc Stevens, who also built **HashClash**
+##### what is the difference between UniColl and md5_fastcoll?
+* md5_fastcoll: Generates an MD5 collision where you have the same prefix (i.e., both messages start the same).
+* UniColl: Much more powerful — allows you to generate a collision where the two files can have different prefixes that you choose yourself **-> and this is exactly what we want in our case**
+
+##### Internals of UniColl (basic idea)
+1. we pick two prefixes, P1 and P2
+2. UniColl extends these prefixes carefully (adding special padding blocks)
+3. It uses differential cryptanalysis on MD5's compression function
+
+##### UniColl in more details:
+1. based on this pdf [trickToGetInstantCollision](https://www.exploit-db.com/docs/english/46047-md5-collision-of-these-2-images-is-now()-trivial-and-instant.pdf)  from exploitation database
+2. ![alt text](image-15.png)
+3. it was mentioned that we can control a few bytes in the collision blocks, and in our case of pdf, we just need to modify the pointer which points to which tree to be shown, and everything else will be exactly the same.
+4. so if we could do this we will have the following:
+    1. Merged file1 -> X = A + B
+    2. copy of Merged file1 -> Y = X = A + B
+    3. the header of file X should show the content of A only
+    4. the header of file Y should show  the content of B only
+    5. using the UniColl trick, we know that this will be single byte to change
+    6. thus we will get H(X) = H(Y) at the end with the visible content not change for any of both files.
+
+##### Explaining the process overview
+* ![Process Flow](image-16.png)
+
+##### Lets see commands to exploit this idea
+1. so we need to write a python code to do all of this, you can find it in **myOwnScript.py**
+2. then run the script
+    > python myOwnScript.py file1.pdf file2.pdf
+3. then you should see two generated pdfs called:
+    1. ZizoAttackedFile1.pdf
+    2. ZizoAttackedFile2.pdf
+4. ![alt text](image-22.png)
+5. ![alt text](image-23.png)
+
+
+## Answering the Task3 Questions:
+1. which property of a secure hash function must be broken -> **collision resistance for scenario 2, and targeted collision resistace for scenario 1**
+2. Is this property broken in case of the MD5 algorithm? Elaborate on this question for each of the scenarios described above.
+    - for Scenario 2: The collision resistance property of the MD5 algorithm is considered to be broken. This means that it is possible to find two different inputs that produce the same MD5 hash output, which is known as a collision.
+    - for Scenario 1: no it is not broken
+3. Elaborate on limitations and possibilities of executing such an attack for each of the scenarios.
+    - for Scenario 1: The limitations are that the attacker cannot change the visible content of the first PDF file, which means that the attack is limited to changing the hidden data in the file. Also, the attacker can only modify one PDF file, which limits the attack further. Another limitation is that the attacker must find a collision in the MD5 function which produces the same hash for both PDFs.
+
+    - for Scenario 2: The limitations of this attack are similar to Scenario 1. The attacker cannot change the visible content of the PDF files, which means that the attack is limited to changing the hidden data in the files. Additionally, the attacker must find a collision in the MD5 hash function that produces the same hash output for both PDF files.
+
+
+## My final trial
+* it will be to wait for the cpc to finish on the given binary files, and try to add them as the binaries instead of the ready made binaries, and see if it work, if not, just remove ZIZOWASHERE and keep MD5IsNowDead as it is.
