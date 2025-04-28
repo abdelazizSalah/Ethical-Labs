@@ -153,13 +153,23 @@ if __name__ == "__main__":
 
 ##### Lets see commands to exploit this idea
 1. so we need to write a python code to do all of this, you can find it in **myOwnScript.py**
-2. then run the script
+2. we need to generate two different headers which has the exact same hash value, this can be done using **cpc script** 
+    > cat **The header of pdf1** > pdf1.bin
+    ![alt text](image-25.png)
+    > cat **The header of pdf2** > pdf2.bin
+    ![alt text](image-27.png)
+    > cpc.sh pdf1.bin pdf2.bin
+    
+    ![alt text](image-24.png)
+
+    > Take the generated bins and move them to the directory which contains your python script, rename them **pdf1.bin** **pdf2.bin** and runs it
+3. then run the script
     > python myOwnScript.py file1.pdf file2.pdf
-3. then you should see two generated pdfs called:
+4. then you should see two generated pdfs called:
     1. ZizoAttackedFile1.pdf
     2. ZizoAttackedFile2.pdf
-4. ![alt text](image-22.png)
-5. ![alt text](image-23.png)
+5. ![alt text](image-22.png)
+6. ![alt text](image-23.png)
 
 
 ## Answering the Task3 Questions:
@@ -172,6 +182,3 @@ if __name__ == "__main__":
 
     - for Scenario 2: The limitations of this attack are similar to Scenario 1. The attacker cannot change the visible content of the PDF files, which means that the attack is limited to changing the hidden data in the files. Additionally, the attacker must find a collision in the MD5 hash function that produces the same hash output for both PDF files.
 
-
-## My final trial
-* it will be to wait for the cpc to finish on the given binary files, and try to add them as the binaries instead of the ready made binaries, and see if it work, if not, just remove ZIZOWASHERE and keep MD5IsNowDead as it is.
