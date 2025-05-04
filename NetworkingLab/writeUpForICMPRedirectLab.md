@@ -83,7 +83,17 @@
 1. Navigate to the folder in which you installed **docker-compose.yml**
 2. ensure you have docker-compose using this command
     > docker-compose --version
-3. if not, install it using this command:
-    > sudo apt install docker-compose 
+3. if not, install it using these commands:
+    > mkdir -p ~/.docker/cli-plugins
+
+    > curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+
+    > sudo mkdir -p /usr/local/lib/docker/cli-plugins
+
+    > sudo mv ~/.docker/cli-plugins/docker-compose /usr/local/lib/docker/cli-plugins/
+
+    > sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+
+    > sudo docker compose version
 4. run this command to build the lab:
-    > sudo docker-compose up
+    > sudo docker compose up
