@@ -97,4 +97,4 @@
     > sudo docker compose version
 4. run this command to build the lab:
     > sudo docker compose up
-    zizo
+    
