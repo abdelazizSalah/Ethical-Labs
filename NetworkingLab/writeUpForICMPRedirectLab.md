@@ -97,4 +97,99 @@
     > sudo docker compose version
 4. run this command to build the lab:
     > sudo docker compose up
-    
+    > ![alt text](image-4.png)
+5. try in another terminal to check for the existing processes
+    > sudo docker ps
+    ![alt text](image-5.png)
+> ! It is recomended not to work on Kali linux but to work on Ubuntu, because there are some conflicts which may face you on kali
+
+6. if you want to stop the infrastructure, just press **CRRL + C** in the first terminal from which you run **sudo docker compose up**
+  
+
+## Working with devices
+1. we can execute some commands on certain device using this command
+   >  docker exec-it (container-id) (command)
+2. so we can get a bash on the attacker machine for example using this command:
+   >  sudo docker exec -it 535a170f04fd bash
+    ![alt text](image-6.png)
+
+## Short description about the devices
+![alt text](image-7.png)
+
+* all machines are implemented using basic Linux containers. 
+* **Routing** capability is enabled by **ipv4_forward**
+
+### What is **ipv4_forward**
+* it is a feature in operating systems that allows a machine like **router** to pass network packets from one network interface to another **ie: forwarding packets which are not meant for itself**
+* for example:
+  * if computer has 2 network interfaces eth0, and eth1.
+  * if IP forwarding is enabled, computer can forward packets recieved on **eth0** to **eth1**
+#### Why this is important? 
+* because in our lab the main router and the malicious router need to forward traffic between subnets. 
+* that is why IP forwarding should be enabled to them in the **docker-compose.yml** file. 
+  
+### How to check them on linux machines? 
+> cat /proc/sys/net/ipv4/ip_forward
+> ![alt text](image-8.png)
+
+* when you see 1, this mean it is active. 
+
+### What is mtr? 
+* it stands for **my traceroute**. 
+* it is a network diagnostic toll that combines the functionality of:
+  * ping: shows if a host is reachable
+  * traceroute: shows the path packets take through the network
+
+#### What does it do? 
+* it shows us: 
+  * All the routers our packet travels to reach the destination
+  * How much delay each hop introduces
+  * if there is any packet loss at specific hop
+#### why to use it? 
+* it helps us in analyzing problems like: 
+  * slow connections
+  * broken routing
+  * packet loss
+  * testing if the routing setup works well
+  * how packetss are being forwarded.
+#### How to use it? 
+> mtr -n (IP address)
+
+* now lets go and solve the Lab Tasks :)
+
+<br>
+
+## Tasks
+
+### Task1: 
+![alt text](image-9.png)
+
+1. Now I will connect to the attacker machine, and try to ping all other devices to ensure that they are up
+![alt text](image-10.png)
+* Now we can see that all of them responded.
+  
+2. Now lets check the routes.
+   1. the Victim **10.9.0.5**
+      * ![alt text](image-11.png) 
+      * we can see that we do not have intermediate routers, because we are on the same subnet
+    2. Server1 **192.168.60.5**  
+       * ![alt text](image-12.png) 
+       * we can see the intermediate router ip: **10.9.0.11**
+    3. Server1 **192.168.60.6**  
+       * ![alt text](image-13.png) 
+       * we can see the intermediate router ip: **10.9.0.11**
+3. lets check the routes from the server side, server1 for example.
+   ![alt text](image-14.png)
+4. now lets check routes: 
+   1. The Victim: 
+      * ![alt text](image-15.png)
+      * we can see we have intermediate router which is 192.168.60.11 as expected
+   2. The Attacker: 
+      * ![alt text](image-16.png)
+      * we can see we have intermediate router which is 192.168.60.11 as expected
+   3. Server2: 
+      * ![alt text](image-17.png)
+* TASK1 Done
+
+### Task2: 
+* 
