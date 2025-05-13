@@ -17,9 +17,7 @@ iptables_cmd = [
     "-s", args.src,
     "-p", "udp",  # <-- UDP protocol now
     "--dport", "9090",
-    "-m", "string",
     "--string", args.find,
-    "--algo", "kmp",
     "-j", "DROP"
 ]
 
