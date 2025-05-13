@@ -348,7 +348,8 @@
 * on the attacker run the scrip
   * > python icmp_spoof.py
 * on the mal router run the tcp wiht -A to show the ascii
-  * > tcpdump -i eth0 -nn -A -s 0 tcp port 9090
+  <!-- * > tcpdump -i eth0 -nn -A -s 0 tcp port 9090 -->
+  * > tcpdump -i eth0 -A
 * now we can see from the screenshot, that the sent data is seen as ASCII using TCPdump
 * ![alt text](image-32.png) 
 
@@ -386,9 +387,7 @@
         "-s", args.src, # source ip
         "-p", "tcp", # the used protocol
         "--dport", "9090", # the listening port
-        "-m", "string",
         "--string", args.find, # string to be replaced
-        "--algo", "kmp",
         "-j", "DROP"
     ]
 
@@ -485,3 +484,11 @@
 * Task4 is done
 
 ### Answering the theoritical questions: 
+#### TCP Protocol:
+1. if the new pattern we need to replace was longer than the sent packet
+   * then there will be an error because the reciever expect certain length, and then it recieves a different one, so it will drop the packet. 
+2. if the new pattern we need to replace was shorter than the sent packet:
+   1. this should cause the same previous problem, however we can just pad some **spaces** until they are equal in length.   
+
+#### UDP Protocol
+* We can replace any string by any other string because there are no condition on length
