@@ -1,4 +1,4 @@
-    #################################################################################################
+#################################################################################################
 #
 # Copyright © 2020  by Wenliang Du.
 # This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0
@@ -63,8 +63,6 @@ services:
         sysctls:
                 - net.ipv4.ip_forward=1
 #                - net.ipv4.ip_forward=0
-                - net.ipv4.conf.all.send_redirects=0
-                - net.ipv4.conf.default.send_redirects=0
         volumes:
                 - ./volumes:/volumes
         extra_hosts:
@@ -126,6 +124,9 @@ services:
 
 
 networks:
+#        driver_opts:
+#          com.docker.network.endpoint.sysctls: '{"net.ipv4.conf.eth0.send_redirects": "1"}'
+
     # We configure two subnets. /24 means that the upper 24 bits give the network address,
     # while the lower 8 bits provide the host address within the network.
     remotenet:
@@ -139,5 +140,3 @@ networks:
         ipam:
             config:
                 - subnet: 10.9.0.0/24
-
-
