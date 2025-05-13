@@ -1,3 +1,8 @@
+| Name              | Date       | Description                                      |
+|-------------------|------------|--------------------------------------------------|
+| Abdelaziz Nematallah | 2025-05-14 | Write-up for ICMP Redirection Attacks Laboratory |
+
+
 # ICMP Redirect Attacks
 * In this Lab we need to understand what does ICMP Redirect Messages are, and how they can be used to perform Man-in-the-middle (MITM) attacks.
   
@@ -130,6 +135,7 @@
   
 ### How to check them on linux machines? 
 > cat /proc/sys/net/ipv4/ip_forward
+
 > ![alt text](image-8.png)
 
 * when you see 1, this mean it is active. 
@@ -272,8 +278,12 @@
 2. Scenario 2: 
    * Malicious Router in a different sub-net
    * this does not make sense, because the victim will think how can I route my traffic to a gateway that I can not reach directly.
+   * ICMP redirects are only accepted if the redirect target is in the same subnet as the victim, so it will not work
 3. Scenario 3: 
-
+  * Victim may accept the redirection, but when it tries to send the traffic to non-existing IP it will not get ARP reply, so it will not send data.
+4. Scenario 4: 
+   * Attacker can not send valid ICMP redirect packet to the victim because it is only accepted if it is sent by the current default gateway.
+   * so the redirection will be blocked. 
 ### Task3 steps: 
 * Lets open 4 terminals, in each we have one machine
 * ![alt text](image-22.png)
@@ -556,13 +566,42 @@
 * Task4 is done
 
 ### Answering the theoritical questions: 
-#### TCP Protocol:
-1. if the new pattern we need to replace was longer than the sent packet
+#### Q1: Consider the cases where the pattern to replace and the new contents have different length
+##### TCP Protocol:
+1. if the new pattern we want to insert was longer than the sent pattern we want to replace
    * then there will be an error because the reciever expect certain length, and then it recieves a different one, so it will drop the packet. 
+   * because there are certain sequence numbers and size defined in header so if they have different length, these values will not be the same
 2. if the new pattern we need to replace was shorter than the sent packet:
    1. this should cause the same previous problem, however we can just pad some **spaces** until they are equal in length.   
 
-#### UDP Protocol
+##### UDP Protocol
 * We can replace any string by any other string because there are no condition on length
   * ![alt text](image-37.png)
-* here we can see that here our replaced string is i passeddddd which is obviously longer than i failed!, and that in udp protocols we do not check on the packet length
+* here we can see that here our replaced string is **i passeddddd** which is obviously longer than i failed!, and that in udp protocols we do not check on the packet length
+
+#### Q2: Think why there is no --dst parameter required?
+* because this can be easily extracted from the packet
+* also we just need to identify the victim packets as we are interested in modifying his packets and forward them wherever they were originally going to. 
+#### Q3: Check the settings of your OS, and find which settings you may need to change and how do these changes affect other clients who are using the mal router as well. 
+* By default OS is configured to forward packets between interfaces not to inspect or modify them. 
+* because routers are supposed to act like ass-through devices.
+* they all work in layer3 in OSI model (**Network layer**)
+* so we need to turn-off ip-forwarding and we can do this using this command:
+  >  echo 0 > /proc/sys/net/ipv4/ip_forward
+* or we can use the command I inserted in the script:
+  > iptables -A FORWARD -s 10.9.0.5 -p tcp --dport 9090 -m string --string findString --algo kmp -j DROP
+* which will drop any packet coming from specific source on specific port using certain protocol, and then after we modify them we can send them.
+* The main advantage of using this command over turning off the ipforwarding is that turning off ipforwarding will lead to dropping any packet comming from any other source even if he was not our victim, but my command specify certain victim, and that is why I consider it better choice.
+* turning off ipforwarding make the malicious router passive device which accept packets only, but will not retransmit them. 
+
+#### Q4: which address would you use? IPv4, IPv6, MAC?
+* I used IPv4 because it exists already in the packet, and it is easier to be extracted, also scapy provides built-in support to easily filer and access IP layer.
+* another possible choice which will be also acceptable in layer2 of OSI specially is using MAC address to also detect the user even if he changed his IP. 
+  * then we need to check if pkt[Ether].src = victim_mac
+
+#### Q5: Delay concerns
+* using byte replacement will make it as fast as possible, which I already did in the script. 
+* using scapy.sniff which only process the relevant packets also decreases the overhead
+* using send() instead of sendp() which works in Layer3 instead of Layer2 is considered to be faster
+* also we should avoid printing too much, but I print in my script to make the code readable, and easy to debug
+* and droping the coming packets using iptables also speeds up the process because it avoids duplication on the traffic. 
