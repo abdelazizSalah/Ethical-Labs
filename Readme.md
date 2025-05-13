@@ -6,4 +6,4 @@
 1. MD5 Collision Attacks  
    1. You can find the lab tasks in /MD5_PDF_Collision
 2. ICMP Redirect Messages Attack  
-   1. You can find the lab tasks in /NetworkingLab
+   1. You can find the lab tasks in /ICMP_Redirection_Attack
