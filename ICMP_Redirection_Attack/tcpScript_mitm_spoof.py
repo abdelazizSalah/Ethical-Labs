@@ -18,7 +18,9 @@ iptables_cmd = [
     "-s", args.src,
     "-p", "tcp",
     "--dport", "9090",
-    "--string", args.find,
+    #"-m", "string",
+    #"--string", args.find,
+    #"--algo", "kmp",
     "-j", "DROP"
 ]
 
