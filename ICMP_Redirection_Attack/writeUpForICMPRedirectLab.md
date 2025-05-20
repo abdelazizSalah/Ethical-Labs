@@ -284,6 +284,7 @@
 4. Scenario 4: 
    * Attacker can not send valid ICMP redirect packet to the victim because it is only accepted if it is sent by the current default gateway.
    * so the redirection will be blocked. 
+   * the gateway will reject this packer from  outer packet (**reverse path filtering**)
 ### Task3 steps: 
 * Lets open 4 terminals, in each we have one machine
 * ![alt text](image-22.png)
