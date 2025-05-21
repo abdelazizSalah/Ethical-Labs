@@ -38,7 +38,7 @@ void University::add_student(const char *const name,
 
 	// copy students data
 	record->id = id;
-	strcpy(record->password, std::string(password).c_str());
+	strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
 	strcpy(record->name, name);
 	strcpy(record->last_name, last_name);
 
@@ -195,7 +195,7 @@ bool check_password(const Student *const student, const char* const password)
 	char lhs[Student::MAX_PASSWORD_LENGTH];
 	char rhs[Student::MAX_PASSWORD_LENGTH];
 	strcpy(rhs, student->password);
-	strcpy(lhs, password);
+	strcpy(lhs, password); //! the vulnerability is here. 
 
 	for(size_t idx = 0; idx != Student::MAX_PASSWORD_LENGTH; ++idx)
 	{
