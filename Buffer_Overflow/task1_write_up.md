@@ -123,4 +123,4 @@
 #### 2. Remove process. 
 1. we can see that it excutes the **btu.request_exmatriculation(std::stoul(argv[2], nullptr,0), argv[3]);** command also with out any filtration on the input.
 2. investigating this function, we can see that calls a function called **::check_password(citer->second, password)** which compare the password of the corrosponding student with the provided ID, and the input password from the user.
-3. checking the body of this function we can see that it defines a static array with length 32, and copies the input password into it, which causes the problem, because if the input password length was > 32, this will cause the buffer overflow issue. 
+3. checking the body of this function, at line 198 we can find the vulnerability. We can see that it defines a static array with length 32, and copies the input password into it, which causes the problem, because if the input password length was > 32, this will cause the buffer overflow issue. 
