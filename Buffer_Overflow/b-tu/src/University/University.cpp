@@ -231,7 +231,7 @@ void University::request_exmatriculation(const unsigned int id, const char* cons
 			exmatriculate(citer->first);
 		}
 		else
-		{
+		{ // 0x804b0bb
 			std::cout << "Invalid password!" << std::endl;
 		}
 	}
