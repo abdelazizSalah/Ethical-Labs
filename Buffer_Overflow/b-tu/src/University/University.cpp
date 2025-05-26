@@ -213,6 +213,7 @@ bool check_password(const Student *const student, const char* const password)
 		}
 	}
 
+	std::cout << "breakPoint\n"; 
 	return check == 0;
 }
 

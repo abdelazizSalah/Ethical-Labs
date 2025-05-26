@@ -69,9 +69,35 @@
 * So we want to examine what happens in the following cases: 
     1. **Non-Excutable Stack?**
         - Even if we successfully injected the shellcode in the stack, we will not be able to excute it, so our exploitation will not work and the CPU will raise a segmantation fault
+        - now lets modify the **MAKEFILE** and try to see what will happen if we turned non excutable stack on
+            - we will change the CXXFLAGS from **-z execstack to -z noexecstack**    
+            - then we will clean the previous build
+                > make clean
+            - then we will make the debug build again
+                > make debug
+            - we should see the following: 
+                - ![alt text](image-49.png)
+            - now lets try to excute the same command for the attack: 
+                > gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\xb0\x01\x31\xdb\xb3\x05\xcd\x80\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x38\xc8\xff\xff")
+            - ![alt text](image-50.png)
+            - as you can see in the above screenshot, it caused **Segmentation fault**, and this is expected, because the ip is pointing to a place in the stack which is not excutable, so it will cause the system to crash
     2. **StackGuard (aka Stack Canary)**
         - here Compiler inserts a random canary value between local variables and the return address on the stack, and before the return from a function the program checks if the canary value was intact, then the program aborts the excution
         - I think this was what is happening with me, so I think the canary flag is not set -> it exists **-fno-stack-protector** then this is not the issue. 
+        - so we will modify the MakeFile and remove -fno-stack-protector from the flags.
+            > make clean
+
+        - then we will rebuild using debug
+            > make debug
+
+            - ![alt text](image-51.png)
+        - now lets try to excute the same command for the attack: 
+             > gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\xb0\x01\x31\xdb\xb3\x05\xcd\x80\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x38\xc8\xff\xff")
+        - now we can see  the result in the below screenshot:
+            - ![alt text](image-52.png)
+        - the reason for that is using the canary, they insert a gaurd between the return address and the buffer, and before returning from the function they check the value of this gaurd.
+        - if there was an attack, the value of the gaurd will be changed, so the program will call **__stack_chk_fail()** which will return false from the program, that is why the normal code think that the problem was with the password since it is a boolean function, but actually the problem is with the stack guard. 
+           
     3. **Address Space Layout Randomization (ASLR)**
         - it randomizes the base addresses of   
             1. stack
@@ -79,6 +105,10 @@
             3. libraries
         - this will make it hard to guess the return address at which we should point at. 
         - since we are using hardcoded **return address** then we will fail. 
+        - even when I turned of **ASLR and removed -no-pie** the attack is still working. 
+        - maybe because we are using nop sled, so we do not need the exact address, so when we point to place in the memory the pointer keep sliding until it find our **mal code**
 ## The exact memory addresses in the release version will differ slightly (by a few bytes) from those encountered in GDB
 * we can brute force small offsets until we can find the exact value to be able to exploit the buffer. 
 * if we got seg fault, we try another one, otherwise, we indicate a success attempt.
+
+> DO not Forget that in order for this exploit to work is to build it in the debug mode. 
