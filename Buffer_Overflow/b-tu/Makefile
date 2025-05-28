@@ -1,7 +1,7 @@
 # NOTE: This makefile disables all relevant protections already by default. You will need
 # to re-enable them bit by bit during the course of this task sheet.
 CXX      := g++
-CXXFLAGS := -m32 -pedantic-errors -Wall -Wextra -Werror -U_FORTIFY_SOURCE -z noexecstack -fno-stack-protector -no-pie -Wl,-z,norelro
+CXXFLAGS := -m32 -pedantic-errors -Wall -Wextra -Werror -U_FORTIFY_SOURCE -z noexecstack  -fno-stack-protector -no-pie -Wl,-z,norelro
 LDFLAGS  := -L/usr/lib32 -L./lib/Log -Wl,-rpath=./lib/Log/ -Wl,-z,norelro -lstdc++ -lm -lLog
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
