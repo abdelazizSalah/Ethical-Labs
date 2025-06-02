@@ -51,6 +51,7 @@ int main(int argc, char** argv)
 			return 0;
 		}
 		std::cout << "Adding Student to database..." << std::endl;
+		std::cout << argv[1] << ' ' << argv [2] << ' ' << argv [3] << ' ' << argv[4] << ' ' << argv[5] << std::endl; 
 		btu.add_student(argv[2], argv[3], std::stoul(argv[4],nullptr,0), argv[5], true);
 	}
 

