@@ -45,13 +45,18 @@ int main(int argc, char** argv)
 	// Add new student
 	if(strcmp(argv[1], OPTION_ADD) == 0)
 	{
+		std::cout << argv[1] << std::endl; 
+		std::cout << argv [2]  << std::endl;  
+		std::cout << argv [3] << std::endl; 
+		std::cout << argv[4] << std::endl; 
+		std::cout << argv[5] << std::endl; 
+		
 		if(argc != 6)
 		{
 			std::cout << "usage: btu add Name LastName ID Passwort" << std::endl;
 			return 0;
 		}
 		std::cout << "Adding Student to database..." << std::endl;
-		std::cout << argv[1] << ' ' << argv [2] << ' ' << argv [3] << ' ' << argv[4] << ' ' << argv[5] << std::endl; 
 		btu.add_student(argv[2], argv[3], std::stoul(argv[4],nullptr,0), argv[5], true);
 	}
 

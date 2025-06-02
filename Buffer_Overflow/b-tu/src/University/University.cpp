@@ -35,7 +35,7 @@ void University::add_student(const char *const name,
 	Student* record = new Student;
 	record->name = new char[strlen(name)];
 	record->last_name = new char[strlen(last_name)];
-
+	std::cout << name << '\n' << last_name << '\n' ; 
 	// copy students data
 	record->id = id;
 	strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
