@@ -86,7 +86,15 @@ the guard 's value is modified or not.
     ```
 * ![alt text](image-60.png)
     - now we can see that the address locatino **0xffffabce** contains the value **0xdeadbeef**
-
+> Note: use the following commands to get the above results: 
+    
+- > python3 task4_generator_payload.py
+- > b main
+- next till line 60 before the add methond
+- > b add_student
+- > next
+- > next till copying all buffers. 
+- > x10x 0xffffabcd
 
 ### Step4: Weponize the results to exmatriculate Klaus once again
 
