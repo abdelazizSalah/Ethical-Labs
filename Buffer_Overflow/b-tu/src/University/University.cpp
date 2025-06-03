@@ -33,7 +33,7 @@ void University::add_student(const char *const name,
 
 	// allocate a new Student record
 	Student* record = new Student;
-	record->name = new char[strlen(name)];
+	record->name = new char[strlen(name)]; // aat compilation -> unknown name length -> run -> input -> Islam
 	record->last_name = new char[strlen(last_name)];
 	std::cout << name << '\n' << last_name << '\n' ; 
 	// copy students data

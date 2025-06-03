@@ -108,6 +108,13 @@
         - since we are using hardcoded **return address** then we will fail. 
         - even when I turned of **ASLR and removed -no-pie** the attack is still working. 
         - maybe because we are using nop sled, so we do not need the exact address, so when we point to place in the memory the pointer keep sliding until it find our **mal code**
+        ```bash
+            set disable-randomization off    # Ensure ASLR is active even in GDB
+            b check_password
+            run
+            print &lhs
+
+        ```
 ## The exact memory addresses in the release version will differ slightly (by a few bytes) from those encountered in GDB
 * we can brute force small offsets until we can find the exact value to be able to exploit the buffer. 
 * if we got seg fault, we try another one, otherwise, we indicate a success attempt.
