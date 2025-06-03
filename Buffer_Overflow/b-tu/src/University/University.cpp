@@ -38,9 +38,23 @@ void University::add_student(const char *const name,
 	std::cout << name << '\n' << last_name << '\n' ; 
 	// copy students data
 	record->id = id;
-	strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
-	strcpy(record->name, name);
-	strcpy(record->last_name, last_name);
+	// strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
+	// strcpy(record->name, name);
+	// strcpy(record->last_name, last_name);
+
+	// check the length of the password
+	if (sizeof(record->password) < 32){
+		strncpy(record->password, std::string(password).c_str(), sizeof(record->password) - 1);
+		record->password[sizeof(record->password) - 1] = '\0'; // ensure null-termination
+	}
+
+	// we can not perform check on the length of name and l_name, because they are not fixed.
+	strncpy(record->name, name, sizeof(record->name) - 1);
+	record->name[sizeof(record->name) - 1] = '\0';
+
+	strncpy(record->last_name, last_name, sizeof(record->last_name) - 1);
+	record->last_name[sizeof(record->last_name) - 1] = '\0';
+
 
 	// append the record to the list
 	student_records.insert(std::pair<const unsigned int, Student*>(id, record));
@@ -194,8 +208,17 @@ bool check_password(const Student *const student, const char* const password)
 	size_t check = 0;
 	char lhs[Student::MAX_PASSWORD_LENGTH];
 	char rhs[Student::MAX_PASSWORD_LENGTH];
+
 	strcpy(rhs, student->password);
 	strcpy(lhs, password); //! the vulnerability is here. 
+
+	if (sizeof(passowrd) < 32) { 
+		strncpy(rhs, student->password, sizeof(rhs) - 1);
+		rhs[sizeof(rhs) - 1] = '\0';
+
+		strncpy(lhs, password, sizeof(lhs) - 1);
+		lhs[sizeof(lhs) - 1] = '\0';
+	}
 
 	for(size_t idx = 0; idx != Student::MAX_PASSWORD_LENGTH; ++idx)
 	{
