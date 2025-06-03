@@ -18,7 +18,8 @@
 ### Back to the program Task 1.1:
 1. the first step is always to try to run the program in the normal behaviour and check if it works properly, and here is a screenshot using the 3 provided interfaces:
     * ![alt text](image-11.png)
-2. now lets try to create a python script which insert inputs with my defined input length:
+2. now lets try to create a python script which insert inputs with my defined input length:4
+    - you can find this script at: **Buffer_Overflow/b-tu/AttackingAddScript.py**
     ``` python
     import subprocess
 
@@ -72,6 +73,7 @@
             * so our target will be to try to find what is the exact length after which the system crashes. 
             * by try and error we will find it 33
 3. Now lets check the second intersting interface which is remove user, so with small modification on the above python script we can create another one.
+    - you can find this script at: **Buffer_Overflow/b-tu/RemovingAttackScript.py**
     * main logic will be to try to use wrong password, zero-length password, and very long password, and check what will happen in both cases
     ``` python
         import subprocess

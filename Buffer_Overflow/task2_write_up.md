@@ -28,7 +28,7 @@
 
 * now we can see the following result: 
     - ![alt text](image-23.png)
-    - return address is **0xffffc870**, because from the screenshot, GDB output says that **Stack level 0, frame at 0xffffc870** which means that the frame starts at this address, and we know that the return address is stored at the top of the stack right after the local variables and saved registers
+    - frame starting address **(which is the register storing the return address)** is **0xffffc870**, because from the screenshot, GDB output says that **Stack level 0, frame at 0xffffc870** which means that the frame starts at this address, and we know that the return address is stored at the top of the stack right after the local variables and saved registers
     - the vulnerable buffer address is **0xffffc838**
     - notice that the return address after excuting the check_password is **saved eip = ffffc860** this is before performing the buffer overflow attack, and you know that this will be our target, that we will need to change this address to make it point to the place where we have our shell code. 
     - this imply that we need to have 70 - 38 = 38 in hex -> 56 - 4 bytes in decimal to be able to overwrite the return address
@@ -50,14 +50,15 @@
     - building it in little indian formate: 
         > 90909090909090909090909090909090909090909090909090909090909090909090909090909090909031c0b00131dbb305cd8038c8ffff
     - I found that some issues occurs when I add the payload at the end of the nop sled, so I decided to add the payload in the middle of the nop sled -> nop-sled + payload + nop sled + address_of_buffer -> it worked.
+        
     - now we will find another issue that our input is treated as string not hex, and this is an issue, to solve it we need to use this command:
         * gdb --args ./build/bin/btu remove 1024 $(echo -e "\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\xb0\x01\x31\xdb\xb3\x05\xcd\x80\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x38\xc8\xff\xff")
         * it just sets the arguments for the gdb call
         * then it sends the payload as hex using the command echo.
-        > notice that I created a python script to generate the payload in this formate for me you can find it at **Buffer_Overflow/echo_payload_generator.py**
+            - > you can find the python script to generate the payload at: **Buffer_Overflow/b-tu/task2_payload_generator.py**   
         - this is how the stack pointer will look like after adding our payload
             - ![alt text](image-25.png) 
-            - you may notice the bunch of zeros that are added below of the payload, and this is added by the program and that was the reason which causes problems if we added our payload at the end of the nop sled not at the begining. qui
+            - you may notice the bunch of zeros that are added below of the payload, and this is added by the program and that was the reason which causes problems if we added our payload at the end of the nop sled not at the begining.
     - then we will see that the program excuted our payload successfuly and the program exit with code 5 as shown in the screenshot: 
         * ![alt text](image-22.png)
 

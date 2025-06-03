@@ -10,7 +10,7 @@
 
     > sudo apt install -y g++-multilib
 2. gdb to be able to run a program in the debugging mode. 
-    > sudp apt install -y gdb
+    > sudo apt install -y gdb
 3. pwndbg is useful for features like: 
     1. Better register display
     2. Heap inspection
