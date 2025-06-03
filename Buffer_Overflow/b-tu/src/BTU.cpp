@@ -45,11 +45,11 @@ int main(int argc, char** argv)
 	// Add new student
 	if(strcmp(argv[1], OPTION_ADD) == 0)
 	{
-		std::cout << argv[1] << std::endl; 
-		std::cout << argv [2]  << std::endl;  
-		std::cout << argv [3] << std::endl; 
-		std::cout << argv[4] << std::endl; 
-		std::cout << argv[5] << std::endl; 
+		// std::cout << argv[1] << std::endl; 
+		// std::cout << argv [2]  << std::endl;  
+		// std::cout << argv [3] << std::endl; 
+		// std::cout << argv[4] << std::endl; 
+		// std::cout << argv[5] << std::endl; 
 		
 		if(argc != 6)
 		{

