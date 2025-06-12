@@ -104,3 +104,35 @@ Once the malicious script runs in the victim’s browser, it can:
     -   The vulnerability is in the client-side JavaScript, not the server.
 
     -  Happens when the browser’s DOM is manipulated without sanitizing input.
+
+
+## Tasks Solutions: 
+### Task1: Obtaining the Admin Password
+- In order to do so, we first must check whether there is a SQL injection vulnerability or not, so this can be done by excuting some try and error sql commands and see if we can see any errors:
+    - ![alt text](image.png)
+- in the above screenshot we can see that on inserting wrong inputs in the login field, it says that SQLite error, this means that we are dealing with **SQLite** database and there is a vulnerability.
+- so my first suspection will be that it uses such command:
+    - "SELECT * FROM users WHERE username = '$username_from_input' and password = '$password_from_input'";
+- so my first trial will be to use this command: 
+    > ' OR 1=1 -- 
+- to try to bypass the password check, but unfortunatly it did not work
+
+- so lets try to know what is the used database scheme:
+    > ' UNION SELECT name FROM sqlite_master WHERE type='table' --
+- on excuting this I got the following results: 
+    - ![alt text](image-2.png)
+- it shows that we have 2 tables which are:    
+    - pages
+    - users
+- now we are more interested in the **users** table, so we need to know its columns names
+    > ' UNION SELECT sql FROM sqlite_master WHERE name='users' --
+- on excuting this query we can see that he users table consists of 2 columns which are: 
+    - name
+    - password
+    - ![alt text](image-3.png)
+- now we need to select all entries
+    > ' UNION SELECT name || ':' || password FROM users --
+- on excuting the above command we can see that we can extract the whole entries in the table: 
+    - ![alt text](image-4.png)
+
+### Task2: Listing the Pages of the Web Application
