@@ -1,3 +1,7 @@
-ada:lovelace
-admin:urock!
-charles:analytical
++---------+------------+
+| name    | password   |
++---------+------------+
+| admin   | urock!     |
+| ada     | lovelace   |
+| charles | analytical |
++---------+------------+

