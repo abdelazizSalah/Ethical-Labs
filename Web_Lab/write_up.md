@@ -148,3 +148,23 @@ Once the malicious script runs in the victim’s browser, it can:
     - ![alt text](image-6.png)
 
 > Hint 2 answer: maybe by applying bruteforce enumeration we can find all the endpoints existing, and by bruteforcing the admin password, we can also find it and we can also bruteforce names.
+
+### Task3: Discovering a Reflected XSS Vector
+* from the pages we found was **search.php** 
+- on adding any text to this page, we can see that it is reflected into the page itself as follows: 
+    - ![alt text](image-7.png)
+- so now this can make us suspecious abbout having xss vulnerability. 
+- so to make sure, we can try adding some harmless test payload like 
+    > test >
+- on doing so we will see that test > exists in the HTML raw output
+    > ![alt text](image-8.png)
+- which shows that we can XSS vulnerability. 
+- now lets answer the three existing questions: 
+    1. Does the search text field provide input validation before sending the request to the server? Is it vulnerable to an XSS Reflection Attack?
+        - no it does not perform any validation, and that is why it is vulnerable
+    2. What HTTP method is used to send this information, i.e., the search query, to the web server?
+        - it uses GET method, as we can see our query in the url
+    3. How is the sent data encoded / structured?
+        - we can see it in the url, so it is url encoded in a key-value format.
+    4. In addition, think about the website’s authentication mechanisms and how they relate to this webpage. Why does this makes this page particularly interesting to us, especially in regards to the attacks built in the following tasks?
+        - The search.php page is particularly interesting because it's publicly accessible (does not require login), but still executes within the context of an authenticated user session if the victim is logged in. This makes it a perfect attack surface for reflected XSS, as malicious scripts injected through it can access the victim's cookies or CSRF tokens, enabling session hijacking and further attacks in later tasks.
