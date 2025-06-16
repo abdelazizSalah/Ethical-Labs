@@ -321,9 +321,16 @@ fetch("http://web-lab/comments.php")
 - It can read the HTML, extract the token using JavaScript, and use it to make valid requests
 
 
+
 ##### Verify that the task work on other users: 
 - log in with Chalies's credientials: 
     - charles | analytical
 - now we can see that it works: 
     - ![alt text](image-15.png)
     - and you can see that charles was forced to leave a comment while he actually did not insert anything.
+
+
+### Task6: 
+- you can see my comments in each file in the folder **task6_fixed_php_files** where I fixed all the issues.
+
+# lab is Done :) 
