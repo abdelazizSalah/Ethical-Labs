@@ -38,22 +38,22 @@ void University::add_student(const char *const name,
 	std::cout << name << '\n' << last_name << '\n' ; 
 	// copy students data
 	record->id = id;
-	strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
-	strcpy(record->name, name);
-	strcpy(record->last_name, last_name);
+	// strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
+	// strcpy(record->name, name);
+	// strcpy(record->last_name, last_name);
 
 	// // check the length of the password
-	// if (sizeof(record->password) < 32){
-	// 	strncpy(record->password, std::string(password).c_str(), sizeof(record->password) - 1);
-	// 	record->password[sizeof(record->password) - 1] = '\0'; // ensure null-termination
-	// }
+	if (sizeof(record->password) < 32){
+		strncpy(record->password, std::string(password).c_str(), sizeof(record->password) - 1);
+		record->password[sizeof(record->password) - 1] = '\0'; // ensure null-termination
+	}
 
-	// // we can not perform check on the length of name and l_name, because they are not fixed.
-	// strncpy(record->name, name, sizeof(record->name) - 1);
-	// record->name[sizeof(record->name) - 1] = '\0';
+	// we can not perform check on the length of name and l_name, because they are not fixed.
+	strncpy(record->name, name, sizeof(record->name) - 1);
+	record->name[sizeof(record->name) - 1] = '\0';
 
-	// strncpy(record->last_name, last_name, sizeof(record->last_name) - 1);
-	// record->last_name[sizeof(record->last_name) - 1] = '\0';
+	strncpy(record->last_name, last_name, sizeof(record->last_name) - 1);
+	record->last_name[sizeof(record->last_name) - 1] = '\0';
 
 
 	// append the record to the list
