@@ -11,6 +11,9 @@
 
 #define CACHE_HIT_THRESHOLD 250  // measured value
 
+// we need the struct to add padding, but we can also get rid of it, and try to make a workaround by reading array elements each 4098 index
+// datablock [ 4096 * 256 ]
+// when access datablock[i * 4096]
 typedef struct datablock {
     uint8_t lpad[2048];   // Ensures dat is isolated
     uint8_t dat;
@@ -18,7 +21,6 @@ typedef struct datablock {
 } DataBlock;
 
 DataBlock array[256];
-
 
 
 void victim() {
@@ -51,16 +53,6 @@ uint64_t time_eval(uint8_t *addr) {
     return end - start;
 }
 
-
-
-uint64_t time_eval(uint8_t *addr) {
-    // this variable is required by the rdtscp to save the processor ID, so it is just a dummy parameter we will not use
-    unsigned int junk;
-    uint64_t start = __rdtscp(&junk);
-    junk = *addr; // just to access the value of the data, to measure what is time needed to access it.
-    uint64_t end = __rdtscp(&junk);
-    return end - start;
-}
 
 uint8_t reloadSideChannel() {
         int junk = 0;
