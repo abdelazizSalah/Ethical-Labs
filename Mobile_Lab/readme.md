@@ -1,7 +1,7 @@
 # Solution: 
 
 ## Task2 
-1. the secret is: I want to believe
+1. the secret is: **I want to believe**
 2. we got it using the script **./Mobile_Lab/decryption.py**
 3. I generated readable files using jadx
     > jadx -d jadx_out Unpawnable.apk
@@ -85,13 +85,28 @@
   -dname "CN=Android Debug,O=Android,C=US"
 
 * then we can use jarsigner to sign the apk
-    > jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 \
-  -keystore ~/.android/debug.keystore \
-  -storepass android -keypass android \
-  unpwnable1_patched.apk androiddebugkey
+    > jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1  -keystore ~/.android/debug.keystore   -storepass android -keypass android  unpwnable1_patched.apk androiddebugkey
 
 * when it ask for the password, enter: **android**
 * then you can open the app and see that we bypassed the condition and no error message appears:
     - ![alt text](image-1.png)
 
 ## Task4: 
+1. create java file, and add DeleteContacts.java
+2. modify the Manifest file
+3. compile it using android studio
+4. copy the smali file into the unpawable_decomposed
+5. rebuild the modified apk
+    > apktool b decomposed -o delete_contact.apk
+6. sign the apk
+    > jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1  -keystore /home/abdelazizsalah/Desktop/Ethical-Labs/Mobile_Lab/my-release-key.keystore   -storepass android -keypass android  malicious.apk alias_name
+7. uninstall the previous apk
+8. install the new apkS
+9. open logcat from android studio, you can see the log
+    - ![alt text](image-2.png)
+10. you can see that the contacts are deleted.
+
+* To reboot the mobile
+    > adb reboot
+* To insert the apk
+    > adb install **apkName**
