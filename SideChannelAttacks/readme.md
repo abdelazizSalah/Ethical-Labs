@@ -58,3 +58,14 @@ The goal of this lab is to understand and exploit the **Spectre vulnerability**,
 * On implementing the flush and reload code which you can find at **./Task2/FlushReload.c**
 - we will see that we can get the secret which is **94**
 * ![alt text](image-4.png)
+
+## Task3 (Theoritical)
+* Since the CPU has two options:
+    1. if correct: the speculative execution is committed and we gain performance gain.
+    2. otherwise: we revert back all the executed commands, and the execution is discarded
+* we can see the difference, that in case of wrong assumption there will be more time consumption, due to the reverting process, which can be seen in the trace.
+* also the values which are executed during the guess will change, even if the execution is later discarded.
+* this can be useful by using Flush+Reload, an attacker can detect what data was speculatively accessed and reconstruct the secret information
+
+## Task4 
+* In this task, we will implement and observe speculative execution in action. Using a provided `SpectreExperiment.c` skeleton, we will combine our earlier Flush+Reload side-channel code with speculative execution. The victim function will contain a bounds check (e.g., `if (x < size)`) before accessing an array. However, through repeated training of the CPU branch predictor with valid inputs, we will trick the CPU into speculatively executing the memory access with an out-of-bounds index. This will load secret data into the cache. By measuring the cache access times afterward, we will confirm whether speculative execution leaked the secret into the cache. The task also asks we to experiment with changing parts of the code to observe how the speculative behavior changes and how the CPU’s branch predictor affects the success of the attack.
