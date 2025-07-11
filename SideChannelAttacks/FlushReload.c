@@ -10,10 +10,18 @@
 #include <stdint.h>
 
 #define CACHE_HIT_THRESHOLD 250  // measured value
+/*
 
-// we need the struct to add padding, but we can also get rid of it, and try to make a workaround by reading array elements each 4098 index
-// datablock [ 4096 * 256 ]
-// when access datablock[i * 4096]
+we need the struct to add padding, but we can also get rid of it, and try to make a workaround by reading array elements each 4098 index
+datablock [ 4096 * 256 ]
+when access datablock[i * 4096]
+
+We did it in this way in order to make the attack work, because if we made it in small size
+	the cache line is 64, so it will get many elements of the array in the same time, which will 
+	make our attack not feasible. 
+
+	so we want to put one element in one page, so we can distingush between elements coming from the cache, and others.
+*/
 typedef struct datablock {
     uint8_t lpad[2048];   // Ensures dat is isolated
     uint8_t dat;
