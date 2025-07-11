@@ -1,33 +1,44 @@
 #include <stdio.h>
 #include <stdint.h>
-#include <x86intrin.h>   // for __rdtscp() and _mm_clflush()
+#include <x86intrin.h>
 
-uint8_t cache_line_data = 1;  // the variable whose access time we are measuring
+#define ITERATIONS 100
 
-// 'cpu_core_id' stores the processor ID from __rdtscp(), required but unused in timing
-unsigned int cpu_core_id;
-
-/*
-    Function: measure_access_time
-    Purpose: Measure the time taken to access a specific memory address.
-    Input: target_address - pointer to the memory location to access.
-    Returns: elapsed CPU cycles for the memory access.
-*/
-uint64_t measure_access_time(uint8_t *target_address) {
-    uint64_t start_cycles, end_cycles;
-    
-    start_cycles = __rdtscp(&cpu_core_id);   // record start timestamp
-    (void)*target_address;                   // access the memory (read)
-    end_cycles = __rdtscp(&cpu_core_id);     // record end timestamp
-
-    return end_cycles - start_cycles;        // return the difference in cycles
+uint64_t time_eval(uint8_t *addr) {
+    // this variable is required by the rdtscp to save the processor ID, so it is just a dummy parameter we will not use
+    unsigned int junk;
+    uint64_t start = __rdtscp(&junk);
+    junk = *addr; // just to access the value of the data, to measure what is time needed to access it.
+    uint64_t end = __rdtscp(&junk);
+    return end - start;
 }
 
-int main() { 
-    // Load data into the cache to simulate a cache hit
-    cache_line_data = 2;
+uint8_t data = 1;
 
-    printf("Cache hit access time: %lu cycles\n", measure_access_time(&cache_line_data)); 
+int main() {
+    // lets define arrays to store in them the time for each trial
+    uint64_t times_cached[ITERATIONS], times_uncached[ITERATIONS];
 
-    return 0; 
+    for (int i = 0; i < ITERATIONS; i++) {
+        volatile uint8_t *access_pointer = &data;
+
+        // Ensure data is in cache (cached read)
+        *access_pointer;
+        times_cached[i] = time_eval((uint8_t *)access_pointer);
+
+        // Flush from cache (uncached read)
+        _mm_clflush((void *)access_pointer);
+        times_uncached[i] = time_eval((uint8_t *)access_pointer);
+    }
+
+    FILE *f = fopen("cache_timings.csv", "w");
+    fprintf(f, "cached,uncached\n");
+    for (int i = 0; i < ITERATIONS; i++) {
+        fprintf(f, "%lu,%lu\n", times_cached[i], times_uncached[i]);
+    }
+    fclose(f);
+
+    printf("processing is done\n");
+    return 0;
 }
+

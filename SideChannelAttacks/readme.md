@@ -51,3 +51,10 @@ The goal of this lab is to understand and exploit the **Spectre vulnerability**,
     - ![alt text](image-2.png)
 * we can see that the maximum time needed for cached version is 130 cycles, while the minimum time needed for uncached version is 719
 * this mean that we can give a threshold 250 for example, if the cycles are less than it, we consider this as cache hit, otherwise it is a cache miss.
+
+## Task2
+* In this task, we will apply the FLUSH+RELOAD technique to leak a secret value from a victim function using the CPU cache as a side channel. The victim function accesses an element of an array based on a secret one-byte value, and our goal is to figure out which element was accessed without directly reading the secret. We will flush the entire array from the cache, invoke the victim function to cause a cache access, and then reload each array element while measuring the access time. The element that is accessed faster (cache hit) reveals the secret value. This task demonstrates how attackers can indirectly observe sensitive information through microarchitectural side effects like cache behavior.
+    - ![alt text](image-3.png)
+* On implementing the flush and reload code which you can find at **./Task2/FlushReload.c**
+- we will see that we can get the secret which is **94**
+* ![alt text](image-4.png)
