@@ -9,3 +9,10 @@
    1. You can find the lab tasks in /ICMP_Redirection_Attack
 3. Advanced Buffer Over Flow
    1. You can find the lab tasks in /Buffer_overflow
+4. Web vulnerabilities (XSS and SQLinjections)
+   1. You can find the lab tasks in /Web_Lab
+5. Mobile Security and apk modification
+   1. You can find the lab tasks in /Mobile_Lab
+6. Spectre Attack and Side channel analysis
+   1. You can find the lab tasks in /SideChannelAttacks
+
