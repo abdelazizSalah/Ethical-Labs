@@ -118,3 +118,5 @@ exactly for the success of the attack?
     - ![alt text](image-9.png)
 
 ## Task7 
+* In this final task, we will extend our Spectre attack to leak not just a single byte, but an entire secret string from memory. Using the speculative execution and cache-timing techniques developed in previous tasks, we will repeatedly perform the attack, incrementing the memory offset each time to target the next character of the secret. For each character, our code will flush the side-channel, trigger the speculative access, and reload the cache to infer the leaked byte. After extracting all the characters, we will reconstruct and print the full secret string. This task demonstrates how attackers can extract sensitive data from protected memory areas byte by byte using microarchitectural side channels.
+
