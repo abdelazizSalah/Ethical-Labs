@@ -101,3 +101,20 @@ exactly for the success of the attack?
 * on excuting the code I wrote in **./Task5/SpectreAttack.c**
 * I got this: 
     - ![alt text](image-8.png)
+
+## Task 6
+* In this task, we will enhance the reliability of our Spectre attack. Due to noise in the system and unpredictable CPU caching behavior, the side-channel attack may sometimes return incorrect results or fail to detect the secret. To address this, we will modify our code to automatically repeat the attack multiple times, collecting results from each run. By analyzing these repeated measurements (e.g., using majority voting or the lowest timing values), our program should reliably identify the correct secret even in noisy environments. Additionally, we will introduce short delays between runs to prevent interference from previous executions, improving the accuracy of our cache-timing measurements.
+
+* first we should learn what is the difference between the **busy waiting** and the usage of usleep
+
+* first of all we need delay because running a loop too quickly, we can leave residual data in the cache from the previous attempts, which will cause the results to be inaccurate, and prevent branch predictor from being properly reset.
+
+* the problem with usleep is the it puts the entire process to sleep, allowing the os to context switch to another process, which mean that the CPU can run some unrelated code which can affect the cache and the branch detection, so when the program wakes up, it will be in different state from the expected. 
+
+* That is why busy waiting is better, because it keeps the program actively running on the CPU core, and this can be simply done with a simple empty for loop. 
+
+* now on modifing the code which you can find at: **./Task6/ConfidentSpectreAttack.c**
+* we can see that we always get the correct answer:
+    - ![alt text](image-9.png)
+
+## Task7 
