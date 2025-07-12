@@ -92,4 +92,12 @@ exactly for the success of the attack?
         - if we did not flush the side-channel array before the attack, it is possible that some of the elements are still cached from earlier victim access, which can cause some false positive as seen in our screenshot where we saw that the size is 8, 9 which are previously accessed in Exhibit A.1
 3. Examine what happens when you replace the line marked as Exhibit D with the following: victim(i+20). Does the attack succeed? Why?
     - ![alt text](image-7.png)
-    - no it does not succeed, because the size is defined to be 10 in the begining, and now our Exhibit A.1 will not perform correctly, because we are sending values which are all > size, so the CPU will learn to predict false branch, and the result will not be leaked correctly
+    - no it does not succeed, because the size is defined to be 10 in the begining, and now our Exhibit A.1 will not perform correctly, because we are
+     sending values which are all > size, so the CPU will learn to predict false branch, and the result will not be leaked correctly
+
+## Task5 
+* In this task, you will implement the full Spectre attack to leak a secret value from memory using speculative execution. Unlike previous tasks where you accessed a known array, this time the goal is to extract a secret from an out-of-bounds memory location that would normally be protected by a bounds check. You will modify and extend your previous speculative execution code to trick the CPU into speculatively executing an illegal memory access, reading the secret byte into the cache. Then, using the FLUSH+RELOAD technique, you will detect which value was cached and recover the first character of a secret string. This task demonstrates the real-world danger of Spectre: bypassing software-level access controls through CPU-level speculative execution side effects.
+
+* on excuting the code I wrote in **./Task5/SpectreAttack.c**
+* I got this: 
+    - ![alt text](image-8.png)
