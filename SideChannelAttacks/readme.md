@@ -69,3 +69,27 @@ The goal of this lab is to understand and exploit the **Spectre vulnerability**,
 
 ## Task4 
 * In this task, we will implement and observe speculative execution in action. Using a provided `SpectreExperiment.c` skeleton, we will combine our earlier Flush+Reload side-channel code with speculative execution. The victim function will contain a bounds check (e.g., `if (x < size)`) before accessing an array. However, through repeated training of the CPU branch predictor with valid inputs, we will trick the CPU into speculatively executing the memory access with an out-of-bounds index. This will load secret data into the cache. By measuring the cache access times afterward, we will confirm whether speculative execution leaked the secret into the cache. The task also asks we to experiment with changing parts of the code to observe how the speculative behavior changes and how the CPU’s branch predictor affects the success of the attack.
+
+* You can see my code modification in **./Task4/SpectreExperiment.c**
+
+### Questions and Answers:
+1. What is the role of the for-loop marked as Exhibit A.1 in the code? Why is the victim function
+invoked with small numbers first, before later invoking it with a larger value (see Exhibit A.2)?
+How does this relate to the predictions the CPU makes as part of the speculative execution?
+    * we use it to make the CPU load the size into the cache.
+    * and all of the results are true (i.e. less than size), in order to teach the CPU to predict the success branch, and to predict that the size which will be sent, is the correct size, to avoid making the CPU predict the false branch.
+2. See what happens when you comment out the lines marked as Exhibit B and the lines
+marked as Exhibit C individually. What do you observe, and what role do these lines play
+exactly for the success of the attack?
+    - For removing Exhibit B:
+        - ![alt text](image-5.png)
+        - on removing the lines, we always get wrong value of the secret. 
+        - This flushes the size variable from the cache making it slow to load, so the CPU will execute the branch before knowing the true value of the size
+        - so when remove this line, the size value always stays in the cache, which allows the CPU to compute the result of the condition fast, without needing of performing the branching technique, so when we try to perform the attack, it will fail, because the size is already inside the cache.
+    - For removing Exhibit C
+        - ![alt text](image-6.png)
+        - this function removes the prior cache state before the speculative access
+        - if we did not flush the side-channel array before the attack, it is possible that some of the elements are still cached from earlier victim access, which can cause some false positive as seen in our screenshot where we saw that the size is 8, 9 which are previously accessed in Exhibit A.1
+3. Examine what happens when you replace the line marked as Exhibit D with the following: victim(i+20). Does the attack succeed? Why?
+    - ![alt text](image-7.png)
+    - no it does not succeed, because the size is defined to be 10 in the begining, and now our Exhibit A.1 will not perform correctly, because we are sending values which are all > size, so the CPU will learn to predict false branch, and the result will not be leaked correctly
