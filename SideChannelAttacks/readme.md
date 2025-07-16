@@ -102,6 +102,12 @@ exactly for the success of the attack?
 * I got this: 
     - ![alt text](image-8.png)
 
+* so the task relies on 
+    1. mistraining the CPU branch predictor
+    2. Triggering speculative out-of-bounds access
+    3. Leaking secret value threough the CPU cache
+    4. detecting leaked values via timing measurements (Flush and reload)
+
 ## Task 6
 * In this task, we will enhance the reliability of our Spectre attack. Due to noise in the system and unpredictable CPU caching behavior, the side-channel attack may sometimes return incorrect results or fail to detect the secret. To address this, we will modify our code to automatically repeat the attack multiple times, collecting results from each run. By analyzing these repeated measurements (e.g., using majority voting or the lowest timing values), our program should reliably identify the correct secret even in noisy environments. Additionally, we will introduce short delays between runs to prevent interference from previous executions, improving the accuracy of our cache-timing measurements.
 
@@ -121,3 +127,4 @@ exactly for the success of the attack?
 * In this final task, we will extend our Spectre attack to leak not just a single byte, but an entire secret string from memory. Using the speculative execution and cache-timing techniques developed in previous tasks, we will repeatedly perform the attack, incrementing the memory offset each time to target the next character of the secret. For each character, our code will flush the side-channel, trigger the speculative access, and reload the cache to infer the leaked byte. After extracting all the characters, we will reconstruct and print the full secret string. This task demonstrates how attackers can extract sensitive data from protected memory areas byte by byte using microarchitectural side channels.
 
 * you can see the solution code inside **./Task7/Full_Spectre_Attack.c**
+* ![alt text](image-10.png)

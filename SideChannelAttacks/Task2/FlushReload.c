@@ -46,7 +46,11 @@ void victim() {
 
 
 void flushSideChannel() {
+
+
     for (int i = 255; i > -1; i--) {
+        // Ensure array is initialized
+        array[i].dat = 1;
         _mm_clflush(&array[i].dat);  // Flush only the dat field
     }
 }
@@ -85,11 +89,7 @@ uint8_t reloadSideChannel() {
 }
 
 int main(int argc, const char** argv) {
-        // Ensure array is initialized
-        for (int i = 0; i < 256; i++) {
-        array[i].dat = 1;
-        }
-
+       
         flushSideChannel();
         victim();
 

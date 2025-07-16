@@ -95,6 +95,7 @@ int main() {
     char stolen_secret[SECRET_LEN + 1];
     stolen_secret[SECRET_LEN] = '\0';
 
+    // move from the first index till the end, each time perform the confident spectre attack
     for (size_t byte_index = 0; byte_index < SECRET_LEN; byte_index++) {
         int results[256] = {0};
         size_t current_offset = secret_offset + byte_index;

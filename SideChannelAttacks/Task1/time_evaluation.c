@@ -20,6 +20,11 @@ int main() {
     uint64_t times_cached[ITERATIONS], times_uncached[ITERATIONS];
 
     for (int i = 0; i < ITERATIONS; i++) {
+        // volatile is important here, because without it, the cpu may allow another threads to work
+        // which can make use of the cache and change its values.
+        // also during the compilation, the compiler tends to enahnce the code, and since the 
+        // data here is not used, so it may consider it as constant, and not assign it as variable.
+        // but volatile force the compiler to leave it, and read it from the the memory each time. 
         volatile uint8_t *access_pointer = &data;
 
         // Ensure data is in cache (cached read)
