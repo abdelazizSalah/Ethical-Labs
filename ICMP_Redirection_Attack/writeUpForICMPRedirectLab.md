@@ -366,6 +366,11 @@
 
 ### Task4 steps: 
 ![alt text](image-31.png)
+- What is IPTables? 
+  - It is a kernel module that decides what packets are allowed to come in or to go outside. 
+  - It performs firewall capabilities such as preventing connections to certain IPs, preventing listening on certain ports and so on. 
+  - So it can determine the flow of packets. 
+  - 
 * lets try to modify the messages to attack the integrity.
 * we need to crafe a python code to do so on the **malicious_router**
   ```python
@@ -394,12 +399,12 @@
     # Your drop rule -> because we need to drop the packets sent from the victim, and then send only our new crafted packets.
     iptables_cmd = [
         "iptables",
-        "-A", "FORWARD",
-        "-s", args.src, # source ip
-        "-p", "tcp", # the used protocol
+        "-A", "FORWARD", # append the rule to the forward chain. 
+        "-s", args.src, # Coming from certain source ip
+        "-p", "tcp", # On this specific protocol
         "--dport", "9090", # the listening port
         "--string", args.find, # string to be replaced
-        "-j", "DROP"
+        "-j", "DROP" # the action to be excuted when the packet matches all previous conditions :).
     ]
 
 
@@ -543,8 +548,14 @@
 
 
 ```
+> For UDP Case
 
+* Then open a listening port on the host 5
+  * > nc -u  -lvnp 9090
+* Connect to it from the victim 
+  * > nc -u 192.168.60.5 9090
 
+> For TCP Case
 * Now we need to make this script excutable on the Malicious router: 
   * > chmod a+x modify.py
 * Then open a listening port on the host 5

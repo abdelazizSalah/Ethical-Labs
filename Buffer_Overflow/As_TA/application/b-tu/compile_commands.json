@@ -1,0 +1,62 @@
+[
+  {
+    "file": "src/University/Student.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-m32",
+      "-pedantic-errors",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-U_FORTIFY_SOURCE",
+      "-fno-stack-protector",
+      "-Iinclude/",
+      "-c",
+      "src/University/Student.cpp",
+      "-o",
+      "build/objects/src/University/Student.o"
+    ],
+    "directory": "/run/media/storage/Dokumente/BTU/Dokumente/CyberSec/lehre/Cyber_Security_Lab/st26/03_buffer_overflow/project_files/task/b-tu",
+    "output": "build/objects/src/University/Student.o"
+  },
+  {
+    "file": "src/University/University.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-m32",
+      "-pedantic-errors",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-U_FORTIFY_SOURCE",
+      "-fno-stack-protector",
+      "-Iinclude/",
+      "-c",
+      "src/University/University.cpp",
+      "-o",
+      "build/objects/src/University/University.o"
+    ],
+    "directory": "/run/media/storage/Dokumente/BTU/Dokumente/CyberSec/lehre/Cyber_Security_Lab/st26/03_buffer_overflow/project_files/task/b-tu",
+    "output": "build/objects/src/University/University.o"
+  },
+  {
+    "file": "src/BTU.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-m32",
+      "-pedantic-errors",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-U_FORTIFY_SOURCE",
+      "-fno-stack-protector",
+      "-Iinclude/",
+      "-c",
+      "src/BTU.cpp",
+      "-o",
+      "build/objects/src/BTU.o"
+    ],
+    "directory": "/run/media/storage/Dokumente/BTU/Dokumente/CyberSec/lehre/Cyber_Security_Lab/st26/03_buffer_overflow/project_files/task/b-tu",
+    "output": "build/objects/src/BTU.o"
+  }
+]
