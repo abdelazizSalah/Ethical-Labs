@@ -146,7 +146,7 @@ bool check_password(const Student *const student, const char *const password) {
     size_t check = 0;
     char lhs[Student::MAX_PASSWORD_LENGTH];
     char rhs[Student::MAX_PASSWORD_LENGTH];
-    strcpy(rhs, student->password);
+    strcpy(rhs, student->password); // here is the other vulnerability. 
     strcpy(lhs, password);
 
     for (size_t idx = 0; idx != Student::MAX_PASSWORD_LENGTH; ++idx) {
