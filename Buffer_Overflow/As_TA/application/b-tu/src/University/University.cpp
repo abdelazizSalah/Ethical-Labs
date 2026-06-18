@@ -1,6 +1,6 @@
 #include "University/Student.h"
 #include "University/University.h"
-
+#include "Log/Log.h"
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -17,7 +17,8 @@ void University::add_student(const char *const name, const char *const last_name
             std::cout << "Student with id " << id << " already imatriculated at " << this->name
                       << std::endl;
         }
-
+        ::write_log(this, id, "Double imatriculation detected");
+       
         return;
     }
 
@@ -28,6 +29,7 @@ void University::add_student(const char *const name, const char *const last_name
 
     // copy students data
     record->id = id;
+    // This function copies directly what in password is into record->password, which is a fixed size array of 16 chars. If password is longer than 15 chars, it will overflow the buffer and potentially overwrite adjacent memory, leading to undefined behavior and security vulnerabilities.
     strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
     strcpy(record->name, name);
     strcpy(record->last_name, last_name);
@@ -35,16 +37,24 @@ void University::add_student(const char *const name, const char *const last_name
     // append the record to the list
     student_records.insert(std::pair<const unsigned int, Student *>(id, record));
 
+    
     // Notify the System about new user or just
     // loading of an existing one
     if (notify) {
         notifyStudentOnImatriculation(record->id);
     }
+    else
+	{
+		::write_log(this, record->id, "Student loaded from Database");
+	}
 
     return;
 }
 
 void University::initialize() {
+    // write log
+	::write_log(this, 0, "Starting to load Students from Database");
+
     // open file stream
     std::ifstream file(db_path.c_str(), std::ifstream::in);
     if (file) {
@@ -66,6 +76,9 @@ void University::initialize() {
             }
         }
     }
+
+    // write log
+    ::write_log(this, 0, "Finished loading Students from Database");
 }
 
 void University::flush() {
@@ -146,7 +159,7 @@ bool check_password(const Student *const student, const char *const password) {
     size_t check = 0;
     char lhs[Student::MAX_PASSWORD_LENGTH];
     char rhs[Student::MAX_PASSWORD_LENGTH];
-    strcpy(rhs, student->password);
+    strcpy(rhs, student->password); // Second vulnerability. 
     strcpy(lhs, password);
 
     for (size_t idx = 0; idx != Student::MAX_PASSWORD_LENGTH; ++idx) {
