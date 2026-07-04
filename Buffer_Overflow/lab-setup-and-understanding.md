@@ -72,7 +72,7 @@
     > g++ -z execstack -o example.exe example.c
 * this will allow the program to have excutable stack.
 * to disable it again you can use this command: 
-    > g++ -z execstack -o example.exe example.c
+    > g++ -z noexecstack -o example.exe example.c
 
 ### Fortify Source
 * Typically modern compilers optimize the code written by developers during compilation step.

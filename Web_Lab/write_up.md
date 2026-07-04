@@ -294,6 +294,7 @@ fetch("http://web-lab/comments.php")
 - add this link in ada URL (simulating that ada pressed the link)
 - we can see that the exploit worked:
     - ![alt text](image-14.png)
+    - ![alt text](image-16.png)
 
 ##### Now lets answer some theoritical questions: 
 1. Q1) what is CSRF Token? 
