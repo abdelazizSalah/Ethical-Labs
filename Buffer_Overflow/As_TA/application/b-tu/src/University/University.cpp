@@ -1,6 +1,6 @@
 #include "University/Student.h"
 #include "University/University.h"
-
+#include "Log/Log.h"
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -18,18 +18,19 @@ void University::add_student(const char *const name, const char *const last_name
                       << std::endl;
         }
 
+        ::write_log(this, id, "Double imatriculation detected");
         return;
     }
 
     // allocate a new Student record
     Student *record = new Student;
-    record->name = new char[strlen(name)];
+    record->name = new char[strlen(name)]; // Create place in the heap
     record->last_name = new char[strlen(last_name)];
 
     // copy students data
     record->id = id;
     strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
-    strcpy(record->name, name);
+    strcpy(record->name, name); // Copy the content of the name into the defined space in the heap. 
     strcpy(record->last_name, last_name);
 
     // append the record to the list
