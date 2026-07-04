@@ -10,6 +10,7 @@
 5. and the secret key is encoded using base64, and encrypted with the key
     - 5UJiFctbmgbDoLXmpL12mkno8HT4Lv8dlat8FxR2GOc=
 6. so I wrote the script to decrypt it. 
+   1. ![Secret](Secret.png)
 
 ## Task3: 
 * Installing a new device with API version 24, I got this screenshot: 
