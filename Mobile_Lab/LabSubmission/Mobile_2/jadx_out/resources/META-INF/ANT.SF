@@ -1,0 +1,36 @@
+Signature-Version: 1.0
+Created-By: 11.0.7 (Ubuntu)
+SHA-256-Digest-Manifest: R4/6nQmJFuAdd1GB1hAYaZXjLN05VzUL7YL4gbe9vhE=
+SHA-256-Digest-Manifest-Main-Attributes: 5SO0SP3XCsXHPnb3ffkrkxFb1K9R+wN
+ NJTeTK/7M7Uw=
+
+Name: AndroidManifest.xml
+SHA-256-Digest: iguFSaTX0HosTvTglrtDmZFyEjCtUClvUVFydiJ+W34=
+
+Name: res/mipmap-mdpi/ic_launcher.png
+SHA-256-Digest: zDyiyHy03bx2sLNloULmzTnLPT1f/EE3w9uHW66q2tw=
+
+Name: res/mipmap-xxxhdpi/ic_launcher.png
+SHA-256-Digest: uZJl19OFonb6VtjQawZb5pkoOiO2niU9fzru6wjfZpM=
+
+Name: res/mipmap-xhdpi/ic_launcher.png
+SHA-256-Digest: sKxzWY1WeQEbTT6X/yd3P7HRbXJw+JY5ay2ZBCJaKF8=
+
+Name: res/mipmap-hdpi/ic_launcher.png
+SHA-256-Digest: 1IE8+6dQfDYjtD1c5/Z8EozNeJ4JAc3L7KQo5Jsf0vE=
+
+Name: res/layout/activity_main.xml
+SHA-256-Digest: WUYT1sR3T6FNxmiMc83f7gsuQvGGEooW/uUqPKvxpOo=
+
+Name: resources.arsc
+SHA-256-Digest: 8Gq7zn9WxhIUL+r6xRPua/MRZQoQq75xsa8nlCxTPNQ=
+
+Name: res/menu/menu_main.xml
+SHA-256-Digest: Un/l1//S/+V+oNZ93qJ6pxzPR5mUl2EmT2zqWGf/M2Y=
+
+Name: classes.dex
+SHA-256-Digest: F1MlRAWLs39lw4ZUbTyfWif4AVE4Ev9khjijAtNLwbE=
+
+Name: res/mipmap-xxhdpi/ic_launcher.png
+SHA-256-Digest: PzqsstTWPX33Z8WpSjEQMjeykg2BXsUwIEOOXnJJcQw=
+

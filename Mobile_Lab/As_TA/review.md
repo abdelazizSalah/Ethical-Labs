@@ -58,3 +58,5 @@
   4. The branch leads directly to the strings like "Root detected!" 
      1. ![Root_Detected](Root_Detected.png)
      2. unpwnable1/MainActivity.smali
+- Is it reasonable to go and allow the contacts manually?
+  - We can try to trick the user to do this as a step of social engineering or by utilizing any feature that make the user allow access to the contacts. 
