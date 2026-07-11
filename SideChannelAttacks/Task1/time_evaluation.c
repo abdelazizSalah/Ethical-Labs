@@ -5,7 +5,8 @@
 #define ITERATIONS 100
 
 uint64_t time_eval(uint8_t *addr) {
-    // this variable is required by the rdtscp to save the processor ID, so it is just a dummy parameter we will not use
+    // this variable is required by the rdtscp to save the processor ID,
+    //  so it is just a dummy parameter we will not use
     unsigned int junk;
     uint64_t start = __rdtscp(&junk);
     junk = *addr; // just to access the value of the data, to measure what is time needed to access it.

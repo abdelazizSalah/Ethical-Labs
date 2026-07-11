@@ -12,7 +12,3 @@ with open("cache_timings.csv", newline='') as csvfile:
 
 print(f"Cached min/avg/max: {min(cached)}/{sum(cached)//len(cached)}/{max(cached)} cycles")
 print(f"Uncached min/avg/max: {min(uncached)}/{sum(uncached)//len(uncached)}/{max(uncached)} cycles")
-
-~                                                                                                                                       
-~                                                                                                                                       
-~              
