@@ -10,6 +10,7 @@
 5. and the secret key is encoded using base64, and encrypted with the key
     - 5UJiFctbmgbDoLXmpL12mkno8HT4Lv8dlat8FxR2GOc=
 6. so I wrote the script to decrypt it. 
+   1. ![Secret](Secret.png)
 
 ## Task3: 
 * Installing a new device with API version 24, I got this screenshot: 
@@ -93,18 +94,22 @@
 
 ## Task4: 
 1. create java file, and add DeleteContacts.java
-2. modify the Manifest file
+   1. We will need to convert it to .smali, which you can find at [DeleteContacts.smali](./DeleteContacts.smali)
+2. modify the Manifest file to add the Contacts permission and also to include the DeleteContact part, you can find the correct modified Manifist [Here](./LabSubmission/Mobile_2/decomposed/AndroidManifest.xml)
+   1. Notice that we need to allow reading and writing for contacts and also to recieve the boot signal
 3. compile it using android studio
 4. copy the smali file into the unpawable_decomposed
+   1. decomposed/smali/sg/vantagepoint/unpwnable1/DeleteContacts.smali
 5. rebuild the modified apk
     > apktool b decomposed -o delete_contact.apk
 6. sign the apk
     > jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1  -keystore /home/abdelazizsalah/Desktop/Ethical-Labs/Mobile_Lab/my-release-key.keystore   -storepass android -keypass android  malicious.apk alias_name
 7. uninstall the previous apk
 8. install the new apkS
-9. open logcat from android studio, you can see the log
+9. Go to the settings -> apps -> unpwnable -> Permissions -> Allow access to contacts
+10. open logcat from android studio, you can see the log
     - ![alt text](image-2.png)
-10. you can see that the contacts are deleted.
+11. you can see that the contacts are deleted.
 
 * To reboot the mobile
     > adb reboot

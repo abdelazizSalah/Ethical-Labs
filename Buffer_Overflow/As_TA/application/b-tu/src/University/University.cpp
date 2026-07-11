@@ -17,21 +17,21 @@ void University::add_student(const char *const name, const char *const last_name
             std::cout << "Student with id " << id << " already imatriculated at " << this->name
                       << std::endl;
         }
+
         ::write_log(this, id, "Double imatriculation detected");
-       
         return;
     }
 
     // allocate a new Student record
     Student *record = new Student;
-    record->name = new char[strlen(name)];
+    record->name = new char[strlen(name)]; // Create place in the heap
     record->last_name = new char[strlen(last_name)];
 
     // copy students data
     record->id = id;
     // This function copies directly what in password is into record->password, which is a fixed size array of 16 chars. If password is longer than 15 chars, it will overflow the buffer and potentially overwrite adjacent memory, leading to undefined behavior and security vulnerabilities.
     strcpy(record->password, std::string(password).c_str()); // the vulnerability is here
-    strcpy(record->name, name);
+    strcpy(record->name, name); // Copy the content of the name into the defined space in the heap. 
     strcpy(record->last_name, last_name);
 
     // append the record to the list
@@ -159,7 +159,11 @@ bool check_password(const Student *const student, const char *const password) {
     size_t check = 0;
     char lhs[Student::MAX_PASSWORD_LENGTH];
     char rhs[Student::MAX_PASSWORD_LENGTH];
+<<<<<<< HEAD
     strcpy(rhs, student->password); // Second vulnerability. 
+=======
+    strcpy(rhs, student->password); // here is the other vulnerability. 
+>>>>>>> cfd5944f63f958b5311c7c238992aee80671b0d8
     strcpy(lhs, password);
 
     for (size_t idx = 0; idx != Student::MAX_PASSWORD_LENGTH; ++idx) {
